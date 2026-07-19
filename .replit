@@ -27,3 +27,8 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm start"
+
+[userenv]
+
+[userenv.shared]
+APP_URL = "https://39276709-49dc-47b7-a760-1bf6079e8074-00-2b0fg5h96489s.picard.replit.dev"
