@@ -1,10 +1,10 @@
-modules = ["nodejs-20"]
+modules = ["nodejs-20", "web"]
 
 run = "npm start"
 entrypoint = "server/index.js"
 
 [nix]
-channel = "stable-24_05"
+channel = "stable-25_05"
 
 [env]
 NODE_ENV = "production"
