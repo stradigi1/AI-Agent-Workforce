@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Accept your invite — AI Agent Workforce Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="chain-rail" aria-hidden="true"></div>
+<div class="auth-shell">
+  <div class="auth-card">
+    <div class="brand">
+      <span class="brand-mark">S</span>
+      <div class="brand-text"><h1>AI Agent Workforce Portal</h1></div>
+    </div>
+    <h2>Accept your invite</h2>
+    <p class="auth-sub">Set your name and password to join</p>
+    <div id="message-box"></div>
+    <form id="invite-form">
+      <label>Your name
+        <input type="text" id="name" required />
+      </label>
+      <label>Password <span class="mono" style="color:var(--text-dimmer);">(min 8 characters)</span>
+        <input type="password" id="password" required minlength="8" />
+      </label>
+      <label class="auth-check">
+        <input type="checkbox" id="tos-accept" required />
+        <span>I agree to the <a href="#" onclick="return false;">Terms of Service</a></span>
+      </label>
+      <label class="auth-check">
+        <input type="checkbox" id="privacy-accept" required />
+        <span>I agree to the <a href="#" onclick="return false;">Privacy Policy</a></span>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Join workspace</button>
+    </form>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+const token = new URLSearchParams(location.search).get('token');
+if (!token) {
+  document.getElementById('message-box').innerHTML = '<div class="auth-error">Missing or invalid invite link.</div>';
+  document.getElementById('invite-form').classList.add('hidden');
+}
+
+document.getElementById('invite-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const box = document.getElementById('message-box');
+  const name = document.getElementById('name').value.trim();
+  const password = document.getElementById('password').value;
+  const tosAccepted = document.getElementById('tos-accept').checked;
+  const privacyAccepted = document.getElementById('privacy-accept').checked;
+
+  try {
+    const result = await fetchJSON(`${API}/auth/accept-invite`, {
+      method: 'POST',
+      body: JSON.stringify({ token, name, password, tosAccepted, privacyAccepted }),
+    });
+    setToken(result.token);
+    setSession({ user: result.user, tenant: result.tenant });
+    location.href = '/app.html';
+  } catch (err) {
+    box.innerHTML = `<div class="auth-error">${escapeHTML(err.message)}</div>`;
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sign in — AI Agent Workforce Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="chain-rail" aria-hidden="true"></div>
+<div class="auth-shell">
+  <div class="auth-card">
+    <div class="brand">
+      <span class="brand-mark">S</span>
+      <div class="brand-text"><h1>AI Agent Workforce Portal</h1></div>
+    </div>
+    <h2>Sign in</h2>
+    <p class="auth-sub">Enter your company workspace</p>
+    <div id="error-box"></div>
+    <form id="login-form">
+      <label>Company slug
+        <input type="text" id="tenant-slug" placeholder="e.g. acme-co" required autocomplete="organization" />
+      </label>
+      <label>Email
+        <input type="email" id="email" required autocomplete="username" />
+      </label>
+      <label>Password
+        <input type="password" id="password" required autocomplete="current-password" />
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+    </form>
+    <div class="auth-footer">
+      <a href="/forgot-password.html">Forgot password?</a> &middot;
+      <a href="/signup.html">Create a new company account</a>
+    </div>
+    <div class="auth-footer"><a href="/stradigi-login.html">Stradigi staff login</a></div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script>
+if (getToken()) location.href = '/app.html';
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorBox = document.getElementById('error-box');
+  errorBox.innerHTML = '';
+  const tenantSlug = document.getElementById('tenant-slug').value.trim().toLowerCase();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  try {
+    const result = await fetchJSON(`${API}/auth/login`, {
+      method: 'POST',
+      body: JSON.stringify({ tenantSlug, email, password }),
+    });
+    setToken(result.token);
+    setSession({ user: result.user, tenant: result.tenant });
+    location.href = '/app.html';
+  } catch (err) {
+    errorBox.innerHTML = `<div class="auth-error">${escapeHTML(err.message)}</div>`;
+  }
+});
+</script>
+</body>
+</html>

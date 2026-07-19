@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Agent Workforce Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="chain-rail" aria-hidden="true"></div>
+<div id="impersonation-banner-slot"></div>
+
+<div class="app-shell">
+  <nav class="sidebar">
+    <div class="brand">
+      <span class="brand-mark" data-tenant-logo>S</span>
+      <div class="brand-text"><h1 data-tenant-name style="font-size:14px;">Company</h1></div>
+    </div>
+    <a class="nav-link" data-route="dashboard">Dashboard</a>
+    <a class="nav-link" data-route="approvals">Approvals <span class="count-badge hidden" id="sidebar-approvals-count"></span></a>
+    <a class="nav-link" data-route="team">Team</a>
+    <a class="nav-link" data-route="tickets">Support</a>
+    <a class="nav-link" data-route="billing">Billing</a>
+    <a class="nav-link" data-route="settings">Settings</a>
+    <div class="sidebar-footer">
+      <div class="user-menu-wrap" id="user-menu-wrap"></div>
+    </div>
+  </nav>
+
+  <div class="main-area">
+    <header class="topbar">
+      <div class="brand-sub mono" id="tenant-plan-label"></div>
+      <div class="status-cluster">
+        <div class="status-pill" id="idle-pill"><span class="dot"></span><span id="idle-label">Checking status…</span></div>
+        <div class="notif-wrap" id="notif-wrap">
+          <button class="notif-bell" id="notif-bell-btn">🔔<span class="dot hidden" id="notif-dot"></span></button>
+          <div class="notif-dropdown hidden" id="notif-dropdown"></div>
+        </div>
+      </div>
+    </header>
+    <div class="view-container" id="view-container">
+      <p class="empty-note">Loading…</p>
+    </div>
+  </div>
+</div>
+
+<div id="task-detail-overlay" class="overlay hidden">
+  <div class="modal-panel">
+    <button class="modal-close" data-close-overlay="task-detail-overlay">&times;</button>
+    <div id="task-detail-content"></div>
+  </div>
+</div>
+
+<div id="legal-reaccept-overlay" class="overlay hidden">
+  <div class="modal-panel">
+    <h3>Our terms have been updated</h3>
+    <p class="panel-hint">Please review and re-accept to continue using the portal.</p>
+    <div id="legal-reaccept-content"></div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/views/tasks.js"></script>
+<script src="js/views/dashboard.js"></script>
+<script src="js/views/approvals.js"></script>
+<script src="js/views/team.js"></script>
+<script src="js/views/tickets.js"></script>
+<script src="js/views/billing.js"></script>
+<script src="js/views/settings.js"></script>
+<script src="js/chatbot-widget.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

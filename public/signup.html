@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create your workspace — AI Agent Workforce Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div class="chain-rail" aria-hidden="true"></div>
+<div class="auth-shell">
+  <div class="auth-card" style="width:min(520px,100%);">
+    <div class="brand">
+      <span class="brand-mark">S</span>
+      <div class="brand-text"><h1>AI Agent Workforce Portal</h1></div>
+    </div>
+    <h2>Create your company workspace</h2>
+    <p class="auth-sub">You'll be the Owner — you can invite teammates after signup</p>
+    <div id="error-box"></div>
+    <form id="signup-form">
+      <label>Company name
+        <input type="text" id="company-name" required />
+      </label>
+      <label>Your name
+        <input type="text" id="owner-name" />
+      </label>
+      <label>Email
+        <input type="email" id="email" required autocomplete="username" />
+      </label>
+      <label>Password <span class="mono" style="color:var(--text-dimmer);">(min 8 characters)</span>
+        <input type="password" id="password" required minlength="8" autocomplete="new-password" />
+      </label>
+
+      <details>
+        <summary style="cursor:pointer;color:var(--text-dim);font-size:12.5px;">View Terms of Service</summary>
+        <div class="legal-inline" id="tos-text">Loading…</div>
+      </details>
+      <label class="auth-check">
+        <input type="checkbox" id="tos-accept" required />
+        <span>I agree to the Terms of Service</span>
+      </label>
+
+      <details>
+        <summary style="cursor:pointer;color:var(--text-dim);font-size:12.5px;">View Privacy Policy</summary>
+        <div class="legal-inline" id="privacy-text">Loading…</div>
+      </details>
+      <label class="auth-check">
+        <input type="checkbox" id="privacy-accept" required />
+        <span>I agree to the Privacy Policy</span>
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-block">Create workspace</button>
+    </form>
+    <div class="auth-footer">Already have an account? <a href="/login.html">Sign in</a></div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/chatbot-widget.js"></script>
+<script>
+if (getToken()) location.href = '/app.html';
+
+(async function loadLegal() {
+  try {
+    const tos = await fetchJSON(`${API}/legal/tos`);
+    document.getElementById('tos-text').textContent = tos.content;
+  } catch { document.getElementById('tos-text').textContent = 'Terms not available yet.'; }
+  try {
+    const privacy = await fetchJSON(`${API}/legal/privacy`);
+    document.getElementById('privacy-text').textContent = privacy.content;
+  } catch { document.getElementById('privacy-text').textContent = 'Privacy policy not available yet.'; }
+})();
+
+document.getElementById('signup-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errorBox = document.getElementById('error-box');
+  errorBox.innerHTML = '';
+
+  const companyName = document.getElementById('company-name').value.trim();
+  const ownerName = document.getElementById('owner-name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const tosAccepted = document.getElementById('tos-accept').checked;
+  const privacyAccepted = document.getElementById('privacy-accept').checked;
+
+  try {
+    const result = await fetchJSON(`${API}/auth/signup`, {
+      method: 'POST',
+      body: JSON.stringify({ companyName, ownerName, email, password, tosAccepted, privacyAccepted }),
+    });
+    setToken(result.token);
+    setSession({ user: result.user, tenant: result.tenant });
+    location.href = '/app.html';
+  } catch (err) {
+    errorBox.innerHTML = `<div class="auth-error">${escapeHTML(err.message)}</div>`;
+  }
+});
+
+initChatWidget('sales');
+</script>
+</body>
+</html>

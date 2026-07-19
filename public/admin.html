@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stradigi Admin Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+<style>:root { --brand: #8B7CC9; --brand-2: #5B8FA8; }</style>
+</head>
+<body>
+<div class="chain-rail" aria-hidden="true"></div>
+
+<div class="app-shell">
+  <nav class="sidebar">
+    <div class="brand">
+      <span class="brand-mark" style="border-color:var(--purple);color:var(--purple);">S</span>
+      <div class="brand-text"><h1 style="font-size:14px;">Stradigi Admin</h1></div>
+    </div>
+    <a class="nav-link" data-route="tenants">Tenants</a>
+    <a class="nav-link" data-route="tickets">Support Tickets</a>
+    <a class="nav-link" data-route="staff">Stradigi Staff</a>
+    <div class="sidebar-footer">
+      <div class="user-menu-wrap" id="user-menu-wrap"></div>
+    </div>
+  </nav>
+  <div class="main-area">
+    <header class="topbar">
+      <div class="brand-sub mono">Internal — cross-tenant visibility</div>
+      <div></div>
+    </header>
+    <div class="view-container" id="view-container"><p class="empty-note">Loading…</p></div>
+  </div>
+</div>
+
+<div id="detail-overlay" class="overlay hidden">
+  <div class="modal-panel">
+    <button class="modal-close" id="overlay-close">&times;</button>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "ai-agent-workforce-portal",
+  "version": "2.0.0",
+  "description": "Multi-tenant, white-labeled AI Agent Workforce SaaS — DOO -> Manager -> Specialist chain of command, billing, support tickets, and admin/impersonation",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "migrate": "node server/db/migrate.js",
+    "seed:legal": "node server/db/seedLegal.js",
+    "seed:admin": "node server/db/seedStradigiAdmin.js",
+    "setup": "npm run migrate && npm run seed:legal"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.1",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.15",
+    "pg": "^8.12.0",
+    "stripe": "^17.3.1"
+  }
+}

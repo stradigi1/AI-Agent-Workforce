@@ -1,0 +1,29 @@
+modules = ["nodejs-20"]
+
+run = "npm start"
+entrypoint = "server/index.js"
+
+[nix]
+channel = "stable-24_05"
+
+[env]
+NODE_ENV = "production"
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["sh", "-c", "npm start"]
+
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[workflows]
+runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm start"
