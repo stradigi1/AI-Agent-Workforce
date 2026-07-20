@@ -1,0 +1,140 @@
+# Terms of Use
+
+**Stradigi AI Workforce Platform**
+
+**Last Updated:** [DATE]
+
+---
+
+## 1. Overview
+
+These Terms of Use ("Terms") govern your access to and use of the Stradigi AI website, marketing pages, documentation, blog, and any other publicly accessible portions of the Stradigi AI Workforce platform (collectively, the "Site"), operated by Stradigi AI ("Stradigi AI," "we," "us," or "our").
+
+These Terms apply to all visitors, browsers, and users of the Site, regardless of whether you hold a paid account. If you have registered for or purchased access to the Stradigi AI Workforce SaaS product itself, that usage is additionally governed by our **Terms of Service**, which controls in the event of any conflict between the two documents.
+
+By accessing or using the Site, you agree to these Terms. If you do not agree, do not access or use the Site.
+
+---
+
+## 2. Who Can Use the Site
+
+You must be at least 18 years old, or the age of legal majority in your jurisdiction, to use the Site. By using the Site, you represent that you meet this requirement.
+
+---
+
+## 3. Site Content
+
+### 3.1 Ownership
+All content on the Site — including text, graphics, logos, product screenshots, videos, documentation, and the overall look and feel — is owned by Stradigi AI or its licensors and is protected by copyright, trademark, and other intellectual property laws.
+
+### 3.2 Limited License
+We grant you a limited, revocable, non-exclusive, non-transferable license to access and view the Site for your own personal or internal business informational purposes. You may not copy, reproduce, distribute, modify, or create derivative works from Site content without our prior written consent, except as necessary to print or save pages for personal reference.
+
+### 3.3 Trademarks
+"Stradigi AI," related logos, and product names are trademarks of Stradigi AI. You may not use them without our prior written permission, except as necessary to accurately reference our products (nominative fair use).
+
+### 3.4 Accuracy of Content
+We aim to keep Site content, including product descriptions, documentation, and pricing information, accurate and current, but we do not warrant that all content is free of errors or omissions. Product capabilities described on the Site are illustrative and may differ from the version of the Service you are provisioned.
+
+---
+
+## 4. Acceptable Use of the Site
+
+When using the Site, you agree not to:
+
+- Use any automated system (bots, scrapers, crawlers) to access the Site in a manner that sends more requests than a human could reasonably produce, except as permitted by our `robots.txt` or with our written consent;
+- Attempt to gain unauthorized access to any portion of the Site, other accounts, or connected systems;
+- Introduce viruses, malware, or other harmful code;
+- Interfere with or disrupt the Site's functionality or servers;
+- Frame or mirror any part of the Site without authorization;
+- Use the Site to violate any applicable law or third party's rights;
+- Submit false or misleading information through any contact, demo request, or signup form.
+
+---
+
+## 5. Accounts Accessed Through the Site
+
+Certain areas of the Site (e.g., login portals, demo scheduling, documentation for authenticated users) may require an account. Account creation, credentials, and related obligations are governed by the Terms of Service. Any use of the actual Stradigi AI Workforce product (dashboards, Agent orchestration, APIs) is governed exclusively by the Terms of Service, not these Terms.
+
+---
+
+## 6. Third-Party Links and Content
+
+The Site may contain links to third-party websites, tools, or resources that are not owned or controlled by Stradigi AI. We are not responsible for the content, accuracy, or practices of any third-party sites. Inclusion of a link does not imply endorsement. Access third-party sites at your own risk and subject to their own terms.
+
+---
+
+## 7. User Submissions
+
+If the Site allows you to submit content (e.g., contact form messages, comments, feedback, community posts), you grant Stradigi AI a non-exclusive, royalty-free, worldwide, perpetual license to use, reproduce, and display that content in connection with operating and promoting the Site and our products. You represent that you have the right to submit such content and that it does not violate any law or third-party right.
+
+We reserve the right to remove any user submission at our discretion, including content we consider inappropriate, unlawful, or in violation of these Terms.
+
+---
+
+## 8. Privacy
+
+Your use of the Site is also governed by our Privacy Policy, available at [LINK], which describes how we collect, use, and protect information gathered through the Site (e.g., analytics, cookies, contact form submissions).
+
+---
+
+## 9. Disclaimers
+
+THE SITE AND ALL CONTENT ARE PROVIDED "AS IS" AND "AS AVAILABLE," WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, OR NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE SITE WILL BE UNINTERRUPTED, SECURE, OR ERROR-FREE, OR THAT ANY DEFECTS WILL BE CORRECTED.
+
+Any descriptions of AI Agent capabilities, performance benchmarks, or case studies on the Site are provided for general informational purposes and do not constitute a guarantee of results for your specific use case.
+
+---
+
+## 10. Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, STRADIGI AI AND ITS OFFICERS, EMPLOYEES, AND LICENSORS WILL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF OR RELATED TO YOUR USE OF THE SITE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. IN NO EVENT WILL STRADIGI AI'S TOTAL LIABILITY ARISING OUT OF THESE TERMS EXCEED ONE HUNDRED U.S. DOLLARS ($100).
+
+Some jurisdictions do not allow the exclusion or limitation of certain damages, so some of the above limitations may not apply to you.
+
+---
+
+## 11. Indemnification
+
+You agree to indemnify, defend, and hold harmless Stradigi AI and its officers, employees, and agents from any claims, liabilities, damages, and expenses (including reasonable attorneys' fees) arising out of your violation of these Terms or your misuse of the Site.
+
+---
+
+## 12. Termination of Access
+
+We may restrict, suspend, or terminate your access to the Site at any time, with or without notice, for any reason, including violation of these Terms.
+
+---
+
+## 13. Changes to These Terms
+
+We may revise these Terms at any time by updating this page. Material changes will be indicated by updating the "Last Updated" date above. Your continued use of the Site after changes are posted constitutes acceptance of the revised Terms.
+
+---
+
+## 14. Governing Law
+
+These Terms are governed by the laws of [JURISDICTION], without regard to conflict-of-law principles. Any disputes will be resolved in the courts located in [JURISDICTION].
+
+---
+
+## 15. General Provisions
+
+- **Entire Agreement:** These Terms, together with our Privacy Policy and (where applicable) our Terms of Service, constitute the entire agreement between you and Stradigi AI regarding the Site.
+- **Severability:** If any provision is found unenforceable, the remaining provisions remain in full effect.
+- **No Waiver:** Our failure to enforce any provision is not a waiver of that provision.
+- **Relationship to Terms of Service:** In the event of a conflict between these Terms and the Terms of Service as applied to your use of the paid Stradigi AI Workforce product, the Terms of Service will govern.
+
+---
+
+## 16. Contact Us
+
+Questions about these Terms can be directed to:
+
+**Stradigi AI**
+[Address]
+[Email]
+
+---
+
+*This document is a template and general starting point, not legal advice. Have it reviewed by counsel before publishing — particularly the liability cap, jurisdiction/governing law selections, and the boundary drawn here between "Site" (general use) and "Service" (paid product), which should match how your actual product and marketing site are structured.*

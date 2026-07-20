@@ -1,77 +1,207 @@
-<!--
-  DRAFT PLACEHOLDER — NOT ATTORNEY-REVIEWED. Do not rely on this for a real launch.
-  See legal/README.md. This structure mirrors the Terms of Service checklist from
-  Section 10 of the project brief so an attorney has a complete, product-specific
-  starting brief rather than a generic template.
--->
+# Terms of Service
 
-# Terms of Service (DRAFT — placeholder pending attorney review)
+**Stradigi AI Workforce Platform**
 
-**Effective date:** [SET BEFORE LAUNCH] · **Version:** 0.1-draft
+**Last Updated:** [DATE]
 
-> This document is a structural placeholder. It has not been reviewed by an attorney and must
-> not be used as the operative Terms of Service for a real launch. Replace this content with
-> attorney-drafted language before accepting paying customers.
+---
 
-## 1. The Service
+## 1. Agreement to Terms
 
-[Company Name] ("we," "us," "Stradigi") operates a web-based portal that simulates a company
-org chart of AI agents (a Director of Operations, department Managers, and Specialists) which
-process directives you submit and produce work product for your review and approval.
+These Terms of Service ("Terms") constitute a legally binding agreement between you ("Customer," "you," or "your") and Stradigi AI ("Stradigi AI," "we," "us," or "our") governing your access to and use of the Stradigi AI Workforce platform, including our website, dashboards, APIs, agent orchestration services, and related tools (collectively, the "Service").
 
-**What "use" of AI-generated output means:** All output produced by the workforce agents is a
-starting point, not a finished, warranted deliverable. You are solely responsible for reviewing,
-editing, and approving any output before relying on it or using it externally — particularly
-output from the Legal and HR departments, which is not professional legal or HR advice.
+By creating an account, accessing, or using the Service, you agree to be bound by these Terms. If you are entering into these Terms on behalf of a company or other legal entity, you represent that you have the authority to bind that entity, in which case "you" refers to that entity. If you do not agree to these Terms, do not access or use the Service.
 
-## 2. Acceptable Use
+---
 
-[Placeholder — attorney to define prohibited uses: illegal content, generating deceptive or
-infringing material, attempting to circumvent usage caps or security controls, reselling access
-without authorization, etc.]
+## 2. The Service
 
-## 3. Ownership
+The Service is a software platform that enables Customers to deploy, configure, orchestrate, and manage a hierarchy of AI-driven software agents ("Agents") to perform tasks across functional areas such as development, marketing, operations, research, data analysis, and administrative workflows. The Service may include:
 
-You retain ownership of the directives, data, and content you submit, and of the output
-generated specifically for your account. [Company Name] retains all ownership of the underlying
-platform, agent workforce system, prompts, and technology.
+- A dashboard/console for creating, assigning, monitoring, and approving Agent tasks
+- Orchestration infrastructure that routes tasks between Agents (e.g., director-level, manager-level, and specialist-level Agents)
+- Integrations with third-party tools and platforms (e.g., messaging, spreadsheets, project trackers, cloud infrastructure)
+- APIs enabling programmatic access to Agent capabilities
+- Underlying AI models provided by Stradigi AI and/or third-party model providers
 
-## 4. Indemnification
+Stradigi AI may modify, update, or discontinue features of the Service at any time. We will make commercially reasonable efforts to notify Customers of material changes that negatively affect core functionality.
 
-[PLACEHOLDER — attorney to confirm scope/enforceability/carve-outs for your jurisdiction.]
-You agree to indemnify and hold harmless [Company Name] from claims arising out of your use of
-the Service, the data you submit, and your reliance on AI-generated output.
+---
 
-## 5. Limitation of Liability
+## 3. Eligibility and Accounts
 
-[PLACEHOLDER — attorney to set the liability cap and confirm which damages are disclaimed
-(e.g. consequential, indirect, incidental) and whether that's enforceable in your governing
-jurisdiction.]
+### 3.1 Eligibility
+You must be at least 18 years old and capable of forming a binding contract to use the Service.
 
-## 6. Warranty Disclaimer
+### 3.2 Account Registration
+You must provide accurate, current, and complete information when creating an account and keep that information up to date.
 
-The Service is provided "as is" and "as available," without warranties of any kind, express or
-implied. [Placeholder — attorney to finalize standard SaaS warranty disclaimer language.]
+### 3.3 Account Security
+You are responsible for maintaining the confidentiality of your account credentials, API keys, and access tokens, and for all activity that occurs under your account. You must notify us immediately of any unauthorized use of your account.
 
-## 7. Termination
+### 3.4 Authorized Users
+If you provision access for employees, contractors, or other authorized users, you are responsible for their compliance with these Terms.
 
-[Placeholder — attorney to define termination for cause vs. convenience, notice periods, and
-what happens to your data on termination — see our Privacy Policy and Section 20 of the
-internal product brief regarding data retention before deletion.]
+---
 
-## 8. Payment Terms
+## 4. Subscription Plans, Fees, and Payment
 
-Subscription billing is handled via Stripe. [Placeholder — attorney to finalize renewal,
-proration, refund, and non-payment/suspension terms, consistent with the billing mechanics
-described in the product.]
+### 4.1 Fees
+Access to the Service is provided on a subscription and/or usage basis as described in your applicable order form, pricing page, or plan selection ("Order"). Fees may be based on seats, Agent-hours, API calls, compute/token consumption, or other metrics.
 
-## 9. Governing Law & Dispute Resolution
+### 4.2 Billing
+Unless otherwise stated in an Order, fees are billed in advance on a recurring basis (monthly or annually) and are non-refundable except as required by law or as expressly stated in these Terms.
 
-[PLACEHOLDER — attorney to select governing law/venue and decide litigation vs. arbitration.]
+### 4.3 Usage-Based Charges
+Certain features (e.g., Agent task execution, API/model consumption) may incur usage-based charges billed in arrears. You are responsible for monitoring your usage through the dashboard.
 
-## 10. Changes to These Terms
+### 4.4 Taxes
+Fees are exclusive of applicable taxes, which you are responsible for unless you provide a valid exemption certificate.
 
-We will notify you of material changes to these Terms. Your continued use of the Service after
-a material change constitutes acceptance of the updated Terms. [Placeholder — attorney to
-confirm notice mechanism/timing requirements for your jurisdiction; the product already tracks
-which version each user has accepted and re-prompts on a version change.]
+### 4.5 Late Payment / Suspension
+We may suspend or limit access to the Service for accounts with overdue payments after providing reasonable notice.
+
+### 4.6 Changes to Pricing
+We may change our pricing on a going-forward basis with at least 30 days' notice before your next renewal term.
+
+---
+
+## 5. Customer Data and Inputs
+
+### 5.1 Ownership
+As between the parties, you retain all rights, title, and interest in and to the data, content, instructions, and materials you submit to or generate through the Service, including task inputs, documents, prompts, and configuration data ("Customer Data").
+
+### 5.2 License to Stradigi AI
+You grant Stradigi AI a limited, non-exclusive, worldwide license to host, process, transmit, and display Customer Data solely as necessary to provide, maintain, secure, and improve the Service.
+
+### 5.3 Responsibility for Data
+You represent that you have all necessary rights and consents to submit Customer Data to the Service, and that such data does not violate any third party's rights or applicable law.
+
+### 5.4 Agent Outputs
+Outputs generated by Agents based on your Customer Data and instructions ("Outputs") are made available to you for your use in accordance with these Terms. Given the nature of AI-generated content, Outputs may be inaccurate, incomplete, or unsuitable for a particular purpose — see Section 9 (Disclaimers).
+
+### 5.5 No Training on Confidential Data Without Consent
+Except as described in our Privacy Policy or a separate Data Processing Agreement, we will not use your Customer Data to train underlying AI models without your consent.
+
+---
+
+## 6. Acceptable Use
+
+You agree not to use the Service to:
+
+- Violate any applicable law, regulation, or third-party right;
+- Deploy Agents to generate or distribute malware, conduct unauthorized system access, or engage in other malicious technical activity;
+- Generate content that is unlawful, defamatory, harassing, or that infringes intellectual property or privacy rights;
+- Attempt to reverse-engineer, decompile, or extract the underlying models, source code, or trade secrets of the Service, except as permitted by law;
+- Use Agents to make automated decisions producing legal or similarly significant effects concerning individuals (e.g., credit, employment, or housing decisions) without appropriate human review, where required by applicable law;
+- Exceed rate limits, probe, scan, or test the vulnerability of the Service without authorization;
+- Resell, sublicense, or provide the Service to third parties as a standalone or competing product without our written consent;
+- Use the Service to build a competing product.
+
+We reserve the right to suspend or terminate access for violations of this Section.
+
+---
+
+## 7. Third-Party Services and AI Models
+
+The Service may integrate with or rely upon third-party services, APIs, and AI model providers (collectively, "Third-Party Services"), including large language model providers. Your use of Third-Party Services accessed through the Service may be subject to additional terms imposed by those providers. We are not responsible for the availability, accuracy, or performance of Third-Party Services, and outages or changes by such providers may affect the Service.
+
+---
+
+## 8. Intellectual Property
+
+### 8.1 Stradigi AI IP
+The Service, including its software, orchestration architecture, dashboards, and underlying technology (excluding Customer Data and Outputs), is owned by Stradigi AI and its licensors and is protected by intellectual property laws. These Terms do not grant you any rights to Stradigi AI's trademarks, logos, or brand features except as necessary to use the Service as intended.
+
+### 8.2 Feedback
+If you provide suggestions, feedback, or ideas about the Service, you grant us a perpetual, irrevocable, royalty-free license to use them without restriction or compensation to you.
+
+---
+
+## 9. Disclaimers
+
+THE SERVICE, INCLUDING ALL AGENT OUTPUTS, IS PROVIDED "AS IS" AND "AS AVAILABLE," WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, OR STATUTORY, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR ACCURACY.
+
+AI Agents may produce outputs that are incomplete, incorrect, biased, or otherwise unsuitable for your intended use. You are solely responsible for reviewing, validating, and deciding whether to rely on or act upon any Agent Output, particularly for consequential decisions (legal, financial, medical, safety-related, HR, or compliance matters). Stradigi AI does not warrant that Agent Outputs will be accurate, reliable, or error-free, or that the Service will be uninterrupted or secure.
+
+---
+
+## 10. Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT WILL STRADIGI AI OR ITS OFFICERS, EMPLOYEES, OR LICENSORS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS, REVENUE, DATA, OR BUSINESS OPPORTUNITY, ARISING OUT OF OR RELATED TO YOUR USE OF THE SERVICE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+STRADIGI AI'S TOTAL AGGREGATE LIABILITY ARISING OUT OF OR RELATED TO THESE TERMS OR THE SERVICE WILL NOT EXCEED THE AMOUNTS PAID BY YOU TO STRADIGI AI IN THE TWELVE (12) MONTHS PRECEDING THE EVENT GIVING RISE TO THE CLAIM.
+
+Some jurisdictions do not allow certain limitations of liability, so some of the above limitations may not apply to you.
+
+---
+
+## 11. Indemnification
+
+You agree to indemnify, defend, and hold harmless Stradigi AI and its officers, employees, and agents from any claims, damages, liabilities, and expenses (including reasonable attorneys' fees) arising out of or related to: (a) your Customer Data; (b) your use of the Service in violation of these Terms or applicable law; (c) your reliance on or use of Agent Outputs; or (d) your violation of any third-party right.
+
+---
+
+## 12. Confidentiality
+
+Each party may have access to non-public information of the other party ("Confidential Information"). Each party agrees to use the other's Confidential Information only as necessary to perform under these Terms and to protect it using at least the same degree of care it uses for its own confidential information, but no less than reasonable care.
+
+---
+
+## 13. Data Protection and Security
+
+Stradigi AI implements commercially reasonable technical and organizational measures to protect Customer Data. Where applicable, the parties may enter into a separate Data Processing Agreement ("DPA") governing the processing of personal data. Our Privacy Policy, available at [LINK], describes how we collect and use personal information in connection with the Service.
+
+---
+
+## 14. Term, Suspension, and Termination
+
+### 14.1 Term
+These Terms remain in effect for as long as you maintain an account or use the Service.
+
+### 14.2 Termination for Convenience
+You may cancel your subscription at any time in accordance with your Order or account settings. We may terminate or suspend your access to the Service for convenience upon reasonable notice.
+
+### 14.3 Termination for Cause
+Either party may terminate these Terms if the other party materially breaches them and fails to cure such breach within 30 days of written notice.
+
+### 14.4 Immediate Suspension
+We may immediately suspend your access if we reasonably believe your use of the Service poses a security risk, may cause harm to Stradigi AI or third parties, or violates Section 6 (Acceptable Use).
+
+### 14.5 Effect of Termination
+Upon termination, your right to access the Service ceases. Sections that by their nature should survive (including Sections 5, 8–13, and 15) will survive termination.
+
+---
+
+## 15. Governing Law and Dispute Resolution
+
+These Terms are governed by the laws of [JURISDICTION], without regard to conflict-of-law principles. Any disputes arising out of or related to these Terms will be resolved in the courts located in [JURISDICTION], and each party consents to the personal jurisdiction of such courts.
+
+*(If you prefer arbitration, this section can be replaced with a binding arbitration clause — that's a meaningful legal choice worth making with counsel, given its effect on class-action rights.)*
+
+---
+
+## 16. Changes to These Terms
+
+We may update these Terms from time to time. If we make material changes, we will provide notice (e.g., via email or in-app notification) at least 14 days before the changes take effect. Continued use of the Service after changes take effect constitutes acceptance of the revised Terms.
+
+---
+
+## 17. General Provisions
+
+- **Entire Agreement:** These Terms, together with any Order and referenced policies, constitute the entire agreement between you and Stradigi AI regarding the Service.
+- **Severability:** If any provision is found unenforceable, the remaining provisions will remain in full effect.
+- **No Waiver:** Failure to enforce any provision is not a waiver of that provision.
+- **Assignment:** You may not assign these Terms without our prior written consent. We may assign these Terms in connection with a merger, acquisition, or sale of assets.
+- **Force Majeure:** Neither party is liable for delays or failures due to causes beyond its reasonable control.
+- **Notices:** Notices will be sent to the contact information associated with your account.
+
+---
+
+## 18. Contact Us
+
+If you have questions about these Terms, contact us at:
+
+**Stradigi AI**
+[Address]
+[Email]
