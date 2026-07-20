@@ -1,9 +1,18 @@
 # Legal documents — read this before doing anything else with this folder
 
-`tos-draft.md` and `privacy-draft.md` are **structural placeholders only**. They exist so the
+`tos-draft.md` and `privacy-draft.md` are **drafts, not final legal language**. They exist so the
 product has *something* to show at signup and so the acceptance-tracking mechanism (Section 10
-of the project brief) has real content to version and log against. **They are not attorney-reviewed
-legal language and must not be treated as final.**
+of the project brief) has real content to version and log against. **They are not
+attorney-reviewed and must not be treated as final** — each carries a warning banner at the top
+saying so; don't remove that banner without an attorney's sign-off replacing it.
+
+`tou.md` (Terms of Use, for the public marketing site rather than the product itself) is also
+here as reference material, but it's **not wired into the app** — the `legal_doc_versions` table's
+`doc_type` CHECK constraint only allows `'tos'` and `'privacy'`, so there's no acceptance-tracking
+flow for it. Wiring it in would mean: adding `'tou'` to that CHECK constraint, seeding it via
+`seedLegal.js`, and adding a third acceptance checkbox to signup/invite-acceptance in the
+frontend. Do that once the public marketing site actually exists — right now it'd be tracking
+acceptance of a document nobody's agreeing to.
 
 Per the brief: the priority for these documents is protecting Stradigi (and Jason personally),
 with indemnification running from tenants/users toward Stradigi. That's exactly the kind of
@@ -26,8 +35,9 @@ actual penalties.
 
 ## To go live
 
-1. Give your attorney the checklist embedded as comments in `tos-draft.md` and
-   `privacy-draft.md` — it's the product-specific brief from Section 10 of the project doc.
+1. Give your attorney `tos-draft.md`, `privacy-draft.md`, and (if the marketing site is live)
+   `tou.md` as a starting point, plus the product-specific checklist from Section 10 of the
+   project brief — this saves them from starting on a generic template.
 2. Once you have final language, run:
    ```
    node server/db/seedLegal.js --docType=tos --version=1.0 --file=path/to/final-tos.md
@@ -36,3 +46,11 @@ actual penalties.
    This inserts a new version row. Every existing user's `acceptedVersion` will now be stale,
    and the portal will re-prompt them to accept on next login — this is the "re-prompt
    acceptance when terms change materially" requirement working as intended, not a bug.
+
+**Important:** re-acceptance is triggered by the **version string changing**, not by the content
+changing. If you edit a draft's content in place and re-run `npm run seed:legal` (which reuses
+the `0.1-draft` version string), it overwrites the existing row's content silently — anyone who
+already "accepted" the old text is now considered to have accepted the new text too, with no
+re-prompt. That's fine pre-launch with no real tenants, but once you have real users, always
+bump the version string on any substantive content change, not just for the final attorney-reviewed
+release.

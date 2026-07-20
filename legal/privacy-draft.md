@@ -1,5 +1,12 @@
 # Privacy Policy
 
+> ⚠ **DRAFT — NOT ATTORNEY-REVIEWED.** This is AI-generated starting text, not final legal
+> language. It has not been reviewed by a licensed attorney and must not be relied on for a
+> real launch — see `legal/README.md`. In particular, the GDPR/CCPA jurisdiction-specific
+> disclosures in Section 10.1 are unfilled placeholders, and whether Customer Data is ever
+> used to improve/train models (Section 4.1) needs to reflect an actual, deliberate decision
+> before this is accurate.
+
 **Stradigi AI Workforce Platform**
 
 **Last Updated:** [DATE]

@@ -1,8 +1,0 @@
-uploads = []
-generated = []
-
-[[outputs]]
-id = "Q24RMn1KMAdaUD_o2FCJP"
-uri = "file://attached_assets/generated_videos/ai-workforce-portal.mp4"
-type = "video"
-title = "AI Agent Workforce Portal — Animated Overview"

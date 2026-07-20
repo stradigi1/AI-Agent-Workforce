@@ -1,5 +1,11 @@
 # Terms of Service
 
+> ⚠ **DRAFT — NOT ATTORNEY-REVIEWED.** This is AI-generated starting text, not final legal
+> language. It has not been reviewed by a licensed attorney and must not be relied on for a
+> real launch — see `legal/README.md` for what specifically needs legal review before this
+> governs a live product, including enforceability of the indemnification and liability
+> clauses below for your governing jurisdiction.
+
 **Stradigi AI Workforce Platform**
 
 **Last Updated:** [DATE]

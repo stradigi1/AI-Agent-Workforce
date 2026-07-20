@@ -3,3 +3,8 @@ node_modules/
 *.log
 .DS_Store
 .claude/
+
+# Replit Agent working files — generated demo assets and scratch text used
+# to produce the legal drafts, not referenced by the app itself.
+.agents/
+attached_assets/

@@ -1,5 +1,13 @@
 # Terms of Use
 
+> ⚠ **DRAFT — NOT ATTORNEY-REVIEWED, AND NOT CURRENTLY WIRED INTO THE APP.** This is
+> AI-generated starting text for the public marketing site (separate from the Terms of
+> Service, which governs the actual product). Unlike `tos-draft.md` and `privacy-draft.md`,
+> this document has no corresponding `doc_type` in `legal_doc_versions` — the schema's
+> CHECK constraint only allows `'tos'` and `'privacy'` — so there is no acceptance-tracking
+> flow for it yet. Treat it as reference material for your attorney and for whoever builds
+> the public marketing site, not as something the product currently enforces.
+
 **Stradigi AI Workforce Platform**
 
 **Last Updated:** [DATE]
