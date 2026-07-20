@@ -1,9 +1,12 @@
 /* ---- Tokens ----
    Palette: graphite base, not-quite-black, three rank colors that read as
-   an actual insignia system rather than decoration. Exposed as CSS custom
-   properties so each tenant's brand_primary_color / brand_secondary_color
-   can override --brand/--brand-2 at runtime (see js/api.js applyBranding).
-   Type: Inter for interface/labels, IBM Plex Mono for data/identifiers.
+   an actual insignia system rather than decoration. --brand defaults to
+   Stradigi's own brand blue (#0063A7, sampled directly from the official
+   favicon) — every tenant can override --brand/--brand-2 at runtime with
+   their own brand_primary_color/brand_secondary_color (see js/api.js
+   applyBranding), but this is what a fresh, uncustomized tenant — and every
+   Stradigi-internal page (login, signup, admin console) — looks like out of
+   the box. Type: Inter for interface/labels, IBM Plex Mono for data/identifiers.
 */
 
 :root {
@@ -13,7 +16,7 @@
   --text: #E8E6DF;
   --text-dim: #9AA2AC;
   --text-dimmer: #6E7580;
-  --brand: #D9A441;      /* DOO rank / tenant primary */
+  --brand: #0063A7;      /* Stradigi blue — DOO rank / tenant primary */
   --brand-2: #5B8FA8;    /* Manager rank / tenant secondary */
   --teal: #4F9D82;       /* Specialist rank */
   --red: #C25545;
@@ -31,7 +34,7 @@ html, body {
 }
 
 a { color: var(--brand-2); }
-::selection { background: #D9A44144; }
+::selection { background: #0063A744; }
 
 .mono { font-family: 'IBM Plex Mono', monospace; }
 .hidden { display: none !important; }
@@ -84,7 +87,7 @@ a { color: var(--brand-2); }
 .btn:hover { border-color: var(--brand-2); }
 .btn:active { transform: scale(0.98); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-primary { background: var(--brand); border-color: var(--brand); color: #14171C; }
+.btn-primary { background: var(--brand); border-color: var(--brand); color: #fff; }
 .btn-primary:hover { filter: brightness(1.1); border-color: var(--brand); }
 .btn-ghost { background: transparent; }
 .btn-danger { background: transparent; border-color: var(--red); color: var(--red); }
@@ -147,7 +150,7 @@ a { color: var(--brand-2); }
 .nav-link.active { background: var(--panel); border-color: var(--border); color: var(--text); }
 .nav-link .count-badge {
   margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px;
-  background: var(--brand); color: #14171C; border-radius: 999px; padding: 1px 7px;
+  background: var(--brand); color: #fff; border-radius: 999px; padding: 1px 7px;
 }
 .sidebar-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); }
 
@@ -201,7 +204,7 @@ table.data-table tr:hover td { background: #ffffff05; }
 /* ---------- Badges ---------- */
 
 .badge { font-size: 11px; font-family: 'IBM Plex Mono', monospace; padding: 3px 9px; border-radius: 999px; white-space: nowrap; display: inline-block; }
-.badge-role-Owner { background: #D9A44122; color: var(--brand); }
+.badge-role-Owner { background: #0063A722; color: var(--brand); }
 .badge-role-Admin { background: #5B8FA822; color: var(--brand-2); }
 .badge-role-Member { background: #6E758022; color: var(--text-dim); }
 .badge-role-StradigiAdmin { background: #8B7CC922; color: var(--purple); }
@@ -222,7 +225,7 @@ table.data-table tr:hover td { background: #ffffff05; }
 .task-row.tier-Manager { border-left: 3px solid var(--brand-2); margin-left: 28px; }
 .task-row.tier-Specialist { border-left: 3px solid var(--teal); margin-left: 56px; }
 .task-tier-tag { font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 7px; border-radius: 4px; flex-shrink: 0; }
-.tier-DOO .task-tier-tag { color: var(--brand); background: #D9A44122; }
+.tier-DOO .task-tier-tag { color: var(--brand); background: #0063A722; }
 .tier-Manager .task-tier-tag { color: var(--brand-2); background: #5B8FA822; }
 .tier-Specialist .task-tier-tag { color: var(--teal); background: #4F9D8222; }
 .task-main { flex: 1; min-width: 0; }
@@ -231,8 +234,8 @@ table.data-table tr:hover td { background: #ffffff05; }
 
 .status-tag { font-size: 11px; font-family: 'IBM Plex Mono', monospace; padding: 3px 9px; border-radius: 999px; flex-shrink: 0; white-space: nowrap; }
 .status-DOO, .status-Manager, .status-Specialist { background: #5B8FA822; color: var(--brand-2); }
-.status-Manager_Review, .status-DOO_Review { background: #D9A44122; color: var(--brand); }
-.status-Approval_Queue { background: #D9A44122; color: var(--brand); }
+.status-Manager_Review, .status-DOO_Review { background: #0063A722; color: var(--brand); }
+.status-Approval_Queue { background: #0063A722; color: var(--brand); }
 .status-Approved { background: #4F9D8222; color: var(--teal); }
 .status-Denied { background: #C2554522; color: var(--red); }
 .status-Stuck { background: #C2554522; color: var(--red); }
@@ -288,7 +291,7 @@ table.data-table tr:hover td { background: #ffffff05; }
 
 .chat-launcher {
   position: fixed; bottom: 22px; right: 22px; width: 54px; height: 54px; border-radius: 50%;
-  background: var(--brand); color: #14171C; border: none; cursor: pointer; font-size: 22px;
+  background: var(--brand); color: #fff; border: none; cursor: pointer; font-size: 22px;
   box-shadow: 0 4px 16px #00000055; z-index: 90;
 }
 .chat-window {
@@ -306,7 +309,7 @@ table.data-table tr:hover td { background: #ffffff05; }
 .chat-msg.assistant { align-self: flex-start; background: var(--bg); border: 1px solid var(--border); }
 .chat-input-row { display: flex; gap: 8px; padding: 10px; border-top: 1px solid var(--border); }
 .chat-input-row input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 9px 10px; color: var(--text); font-size: 13px; }
-.chat-input-row button { background: var(--brand); border: none; color: #14171C; border-radius: 7px; padding: 0 14px; cursor: pointer; font-weight: 700; }
+.chat-input-row button { background: var(--brand); border: none; color: #fff; border-radius: 7px; padding: 0 14px; cursor: pointer; font-weight: 700; }
 
 /* ---------- Misc ---------- */
 

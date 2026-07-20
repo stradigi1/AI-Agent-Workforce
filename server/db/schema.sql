@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS tenants (
   name                        TEXT NOT NULL,
   slug                        TEXT UNIQUE NOT NULL,
   logo_url                    TEXT,
-  brand_primary_color         TEXT DEFAULT '#D9A441',
+  brand_primary_color         TEXT DEFAULT '#0063A7', -- Stradigi blue, sampled from the official favicon
   brand_secondary_color       TEXT DEFAULT '#5B8FA8',
   plan                        TEXT DEFAULT 'trial',
   stripe_customer_id          TEXT,
