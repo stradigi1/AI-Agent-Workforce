@@ -7,16 +7,17 @@
 async function sendViaAgentMail({ to, subject, text, html }) {
   const { ReplitConnectors } = require('@replit/connectors-sdk');
   const connectors = new ReplitConnectors();
-  const inboxId = process.env.AGENTMAIL_INBOX_ID;
+  const inboxId = encodeURIComponent(process.env.AGENTMAIL_INBOX_ID);
 
+  // AgentMail expects `to` as a plain email string (or comma-separated string)
   const body = { to, subject };
   if (html) body.html = html;
   if (text) body.text = text;
 
   const response = await connectors.proxy(
     'agentmail',
-    `/v0/inboxes/${inboxId}/messages`,
-    { method: 'POST', body: JSON.stringify(body) }
+    `/v0/inboxes/${inboxId}/messages/send`,
+    { method: 'POST', body: JSON.stringify(body), headers: { 'Content-Type': 'application/json' } }
   );
 
   if (!response.ok) {
