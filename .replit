@@ -33,6 +33,7 @@ args = "npm start"
 
 [userenv.shared]
 APP_URL = "https://39276709-49dc-47b7-a760-1bf6079e8074-00-2b0fg5h96489s.picard.replit.dev"
+AGENTMAIL_INBOX_ID = "stradigi@agentmail.to"
 
 [postMerge]
 path = "scripts/post-merge.sh"
