@@ -119,6 +119,9 @@
     if (task.status === 'Stuck') {
       buttons.push(`<button class="btn btn-primary" data-action="resume">DOO: Resume</button>`);
     }
+    if (!task.parent_id && ['DOO', 'Manager', 'Specialist', 'DOO_Review'].includes(task.status)) {
+      buttons.push(`<button class="btn btn-ghost" data-action="nudge" title="Been sitting like this longer than expected? A server restart mid-task can silently freeze it — this safely re-triggers it.">Nudge (looks frozen?)</button>`);
+    }
     if (task.status === 'Approval_Queue' && isApprover && !task.parent_id) {
       buttons.push(`<button class="btn btn-primary" data-action="approve">Approve</button>`);
       buttons.push(`<button class="btn btn-danger" data-action="deny">Deny…</button>`);
@@ -136,6 +139,7 @@
 
     act('retry', async () => { await run(() => fetchJSON(`${API}/tasks/${task.id}/retry`, { method: 'POST' })); });
     act('resume', async () => { await run(() => fetchJSON(`${API}/tasks/${task.id}/resume`, { method: 'POST' })); });
+    act('nudge', async () => { await run(() => fetchJSON(`${API}/tasks/${task.id}/nudge`, { method: 'POST' }), 'Re-triggered — give it a moment and refresh'); });
     act('approve', async () => { await run(() => fetchJSON(`${API}/approvals/${task.id}/approve`, { method: 'POST' })); });
     act('deny', async () => {
       const reason = prompt('Reason for denial (sent back to the DOO):');
@@ -148,10 +152,10 @@
     });
     act('close', () => close());
 
-    async function run(fn) {
+    async function run(fn, successMessage) {
       try {
         await fn();
-        toast('Done', 'success');
+        toast(successMessage || 'Done', 'success');
         close();
         if (window.__refreshCurrentView) window.__refreshCurrentView();
       } catch (err) {

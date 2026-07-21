@@ -280,7 +280,7 @@ async function createDirective(tenantId, userId, { taskName, objective, priority
 // automatically, stopping only at the two true human gates (Approval Queue)
 // or the two flagged-for-attention states (Stuck, Error). Safe to call
 // repeatedly/idempotently (e.g. a manual "Resume" action after Stuck/Error). ----------
-async function advanceChain(tenantId, rootTaskId) {
+async function runChainSteps(tenantId, rootTaskId) {
   let root = await tasksRepo.getByIdUnsafe(rootTaskId);
   if (!root) return;
 
@@ -369,7 +369,7 @@ async function advanceChain(tenantId, rootTaskId) {
       root = await tasksRepo.updateUnsafe(root.id, {
         status: 'Specialist', revision_round: dooRejectRound, doo_validation_notes: notes,
       });
-      return advanceChain(tenantId, rootTaskId);
+      return runChainSteps(tenantId, rootTaskId);
     }
 
     return root;
@@ -381,6 +381,31 @@ async function advanceChain(tenantId, rootTaskId) {
       `"${root.task_name}" hit an error and needs a manual retry.`,
       `/app.html#/tasks/${rootTaskId}`
     );
+  }
+}
+
+// The chain runs fire-and-forget inside this same Node process rather than a
+// durable job queue — if the process restarts mid-task (a Replit redeploy,
+// autoscale cycle, crash), the in-flight promise just disappears and the
+// task is left sitting at whatever status it last reached, with nothing
+// actively working on it and no Error/Stuck flag to say so. This in-memory
+// guard only prevents a *duplicate* concurrent run for the same task within
+// one live process (e.g. a double-click on Nudge) — it can't detect or
+// recover from the process-restart case itself, which is what nudgeTask()
+// below is for.
+const activeChains = new Set();
+
+async function advanceChain(tenantId, rootTaskId) {
+  const key = `${tenantId}:${rootTaskId}`;
+  if (activeChains.has(key)) {
+    console.log(`[orchestrator] advanceChain(${rootTaskId}) skipped — already running`);
+    return;
+  }
+  activeChains.add(key);
+  try {
+    return await runChainSteps(tenantId, rootTaskId);
+  } finally {
+    activeChains.delete(key);
   }
 }
 
@@ -478,6 +503,31 @@ async function retryTask(tenantId, taskId) {
   return updated;
 }
 
+// A task can end up genuinely frozen — not flagged Error, not flagged Stuck
+// — if the server process running its chain got restarted mid-task (see the
+// comment on the activeChains guard above). There's no way to distinguish
+// "still actually running" from "orphaned by a restart" from the DB alone,
+// so this is a manual, human-triggered action rather than something
+// automatic: the user decides a task has been sitting too long and asks for
+// it to be nudged. Safe to call even if it turns out nothing was wrong —
+// advanceChain always resumes from the task's current stored status, and
+// the activeChains guard no-ops if a run is genuinely still in flight.
+const NUDGEABLE_STATUSES = ['DOO', 'Manager', 'Specialist', 'DOO_Review', 'Stuck', 'Error'];
+
+async function nudgeTask(tenantId, taskId) {
+  const root = await tasksRepo.getById(tenantId, taskId);
+  if (!root) throw new Error('Task not found');
+  if (!NUDGEABLE_STATUSES.includes(root.status)) {
+    throw new Error(`"${root.status}" tasks don't need nudging`);
+  }
+
+  if (root.status === 'Error') return retryTask(tenantId, taskId);
+  if (root.status === 'Stuck') return resumeStuckTask(tenantId, taskId);
+
+  advanceChain(tenantId, taskId).catch((err) => console.error('[orchestrator] nudge advance failed', err));
+  return root;
+}
+
 // ---------- Idle mode: when there's no open work, the DOO proposes a
 // workforce improvement instead (Section 3's "idle behavior"). ----------
 async function runIdleDoo(tenantId) {
@@ -502,6 +552,6 @@ async function checkIdleAndPropose(tenantId) {
 }
 
 module.exports = {
-  createDirective, advanceChain, approveTask, denyTask, resumeStuckTask, retryTask,
+  createDirective, advanceChain, approveTask, denyTask, resumeStuckTask, retryTask, nudgeTask,
   checkIdleAndPropose, REVISION_CAP,
 };

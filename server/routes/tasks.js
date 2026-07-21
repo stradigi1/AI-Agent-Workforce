@@ -175,4 +175,18 @@ router.post('/:id/resume', async (req, res) => {
   }
 });
 
+// "Nudge" — for a task that looks frozen mid-chain but was never flagged
+// Error or Stuck, most likely because the server process running it got
+// restarted (deploy/autoscale cycle) partway through. Safe to call even if
+// the task turns out to still be actively processing.
+router.post('/:id/nudge', async (req, res) => {
+  try {
+    const updated = await orchestrator.nudgeTask(req.tenantId, req.params.id);
+    await activityRepo.log(req.tenantId, req.user.id, 'task_nudged', `Task ${req.params.id}`);
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 module.exports = router;
