@@ -11,7 +11,8 @@ NODE_ENV = "production"
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["sh", "-c", "npm start"]
+run = ["npm", "start"]
+build = ["bash", "scripts/build.sh"]
 
 [[ports]]
 localPort = 3000
