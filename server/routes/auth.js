@@ -162,6 +162,38 @@ router.post('/stradigi/login', loginLimiter, async (req, res) => {
   }
 });
 
+// Stradigi staff forgot-password — same idea as the tenant flow below, just
+// without a company slug, since staff accounts are unique by email alone
+// (not scoped to a tenant). Completing the reset reuses the same generic
+// POST /reset-password endpoint — it looks a user up by token regardless of
+// user_type, so nothing tenant-specific needed there.
+router.post('/stradigi/forgot-password', loginLimiter, async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'email is required' });
+
+    const user = await usersRepo.getStradigiUserByEmail(email);
+
+    // Always respond success-shaped, whether or not the account exists, so
+    // this endpoint can't be used to enumerate registered staff emails.
+    if (user) {
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+      await usersRepo.setPasswordResetToken(user.id, resetToken, expiresAt);
+      const resetUrl = `${process.env.APP_URL || ''}/reset-password.html?token=${resetToken}`;
+      await emailService.sendEmail({
+        to: email,
+        subject: 'Reset your Stradigi staff password',
+        text: `Reset your password: ${resetUrl}\nThis link expires in 1 hour.`,
+      });
+    }
+    res.json({ ok: true, message: 'If that account exists, a reset link has been sent.' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ---------- Accept invite (sets password for a pre-created invited user) ----------
 router.post('/accept-invite', async (req, res) => {
   try {
