@@ -16,7 +16,13 @@ async function fetchJSON(url, opts = {}) {
 
   const res = await fetch(url, { ...opts, headers });
 
-  if (res.status === 401) {
+  // A 401 only means "your session expired" if we were actually sending a
+  // bearer token that got rejected. Login/signup endpoints also legitimately
+  // return 401 for wrong credentials, rate-limiting, or account lockout —
+  // those are normal API responses with their own message in the body, not
+  // an expired-session situation, and were previously always overwritten by
+  // this generic message regardless of what the server actually said.
+  if (res.status === 401 && token) {
     clearSession();
     if (!location.pathname.endsWith('login.html') && !location.pathname.endsWith('index.html') && location.pathname !== '/') {
       location.href = '/login.html';
