@@ -1,6 +1,6 @@
 # Privacy Policy
 
-> ⚠ **DRAFT — NOT ATTORNEY-REVIEWED.** This is AI-generated starting text, not final legal
+> DRAFT — NOT ATTORNEY-REVIEWED. This is AI-generated starting text, not final legal
 > language. It has not been reviewed by a licensed attorney and must not be relied on for a
 > real launch — see `legal/README.md`. In particular, the GDPR/CCPA jurisdiction-specific
 > disclosures in Section 10.1 are unfilled placeholders, and whether Customer Data is ever

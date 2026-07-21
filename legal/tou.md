@@ -1,6 +1,6 @@
 # Terms of Use
 
-> ⚠ **DRAFT — NOT ATTORNEY-REVIEWED, AND NOT CURRENTLY WIRED INTO THE APP.** This is
+> DRAFT — NOT ATTORNEY-REVIEWED, AND NOT CURRENTLY WIRED INTO THE APP. This is
 > AI-generated starting text for the public marketing site (separate from the Terms of
 > Service, which governs the actual product). Unlike `tos-draft.md` and `privacy-draft.md`,
 > this document has no corresponding `doc_type` in `legal_doc_versions` — the schema's

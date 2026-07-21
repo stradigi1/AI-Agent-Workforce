@@ -1,8 +1,7 @@
 /* ---- Tokens ----
    Palette: graphite base, not-quite-black, three rank colors that read as
    an actual insignia system rather than decoration. --brand defaults to
-   Stradigi's own brand blue (#0063A7, sampled directly from the official
-   favicon) — every tenant can override --brand/--brand-2 at runtime with
+   Stradigi's own brand blue (#005CB9) — every tenant can override --brand/--brand-2 at runtime with
    their own brand_primary_color/brand_secondary_color (see js/api.js
    applyBranding), but this is what a fresh, uncustomized tenant — and every
    Stradigi-internal page (login, signup, admin console) — looks like out of
@@ -16,7 +15,7 @@
   --text: #E8E6DF;
   --text-dim: #9AA2AC;
   --text-dimmer: #6E7580;
-  --brand: #0063A7;      /* Stradigi blue — DOO rank / tenant primary */
+  --brand: #005CB9;      /* Stradigi blue — DOO rank / tenant primary */
   --brand-2: #5B8FA8;    /* Manager rank / tenant secondary */
   --teal: #4F9D82;       /* Specialist rank */
   --red: #C25545;
@@ -34,7 +33,7 @@ html, body {
 }
 
 a { color: var(--brand-2); }
-::selection { background: #0063A744; }
+::selection { background: #005CB944; }
 
 .mono { font-family: 'IBM Plex Mono', monospace; }
 .hidden { display: none !important; }
@@ -204,7 +203,7 @@ table.data-table tr:hover td { background: #ffffff05; }
 /* ---------- Badges ---------- */
 
 .badge { font-size: 11px; font-family: 'IBM Plex Mono', monospace; padding: 3px 9px; border-radius: 999px; white-space: nowrap; display: inline-block; }
-.badge-role-Owner { background: #0063A722; color: var(--brand); }
+.badge-role-Owner { background: #005CB922; color: var(--brand); }
 .badge-role-Admin { background: #5B8FA822; color: var(--brand-2); }
 .badge-role-Member { background: #6E758022; color: var(--text-dim); }
 .badge-role-StradigiAdmin { background: #8B7CC922; color: var(--purple); }
@@ -225,7 +224,7 @@ table.data-table tr:hover td { background: #ffffff05; }
 .task-row.tier-Manager { border-left: 3px solid var(--brand-2); margin-left: 28px; }
 .task-row.tier-Specialist { border-left: 3px solid var(--teal); margin-left: 56px; }
 .task-tier-tag { font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 7px; border-radius: 4px; flex-shrink: 0; }
-.tier-DOO .task-tier-tag { color: var(--brand); background: #0063A722; }
+.tier-DOO .task-tier-tag { color: var(--brand); background: #005CB922; }
 .tier-Manager .task-tier-tag { color: var(--brand-2); background: #5B8FA822; }
 .tier-Specialist .task-tier-tag { color: var(--teal); background: #4F9D8222; }
 .task-main { flex: 1; min-width: 0; }
@@ -234,8 +233,8 @@ table.data-table tr:hover td { background: #ffffff05; }
 
 .status-tag { font-size: 11px; font-family: 'IBM Plex Mono', monospace; padding: 3px 9px; border-radius: 999px; flex-shrink: 0; white-space: nowrap; }
 .status-DOO, .status-Manager, .status-Specialist { background: #5B8FA822; color: var(--brand-2); }
-.status-Manager_Review, .status-DOO_Review { background: #0063A722; color: var(--brand); }
-.status-Approval_Queue { background: #0063A722; color: var(--brand); }
+.status-Manager_Review, .status-DOO_Review { background: #005CB922; color: var(--brand); }
+.status-Approval_Queue { background: #005CB922; color: var(--brand); }
 .status-Approved { background: #4F9D8222; color: var(--teal); }
 .status-Denied { background: #C2554522; color: var(--red); }
 .status-Stuck { background: #C2554522; color: var(--red); }
@@ -273,7 +272,8 @@ table.data-table tr:hover td { background: #ffffff05; }
 /* ---------- Notifications dropdown ---------- */
 
 .notif-wrap { position: relative; }
-.notif-bell { position: relative; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; cursor: pointer; color: var(--text-dim); }
+.notif-bell { position: relative; display: flex; align-items: center; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; cursor: pointer; color: var(--brand); }
+.notif-bell:hover { border-color: var(--brand); }
 .notif-bell .dot { position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
 .notif-dropdown { position: absolute; right: 0; top: calc(100% + 8px); width: 320px; max-height: 380px; overflow-y: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 8px; z-index: 60; }
 .notif-item { padding: 10px; border-radius: 7px; font-size: 12.5px; cursor: pointer; }
@@ -291,9 +291,11 @@ table.data-table tr:hover td { background: #ffffff05; }
 
 .chat-launcher {
   position: fixed; bottom: 22px; right: 22px; width: 54px; height: 54px; border-radius: 50%;
-  background: var(--brand); color: #fff; border: none; cursor: pointer; font-size: 22px;
+  background: var(--brand); color: #fff; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
   box-shadow: 0 4px 16px #00000055; z-index: 90;
 }
+.chat-launcher:hover { filter: brightness(1.1); }
 .chat-window {
   position: fixed; bottom: 90px; right: 22px; width: min(360px, 92vw); height: min(480px, 70vh);
   background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
