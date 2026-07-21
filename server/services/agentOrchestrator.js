@@ -451,8 +451,25 @@ async function denyTask(tenantId, taskId, approverUserId, reason) {
 }
 
 // ---------- DOO "resume stuck task" manual action ----------
+// Retry/Resume/Nudge all only make sense applied to the root task of a
+// directive (advanceChain assumes it was handed a root task's id — a
+// Manager or Specialist row has no "Manager child" of its own, so treating
+// one as root crashes with "Cannot read properties of undefined (reading
+// 'id')" the moment it looks for one). But the org tree deliberately shows
+// Stuck/Error status on the specific child that's actually stuck, and it's
+// entirely natural for a user to click into THAT row and hit Resume/Retry
+// there — so rather than relying on the frontend to always gate these
+// buttons to root rows, resolve to the real root here regardless of which
+// task id was passed in.
+async function resolveRootTask(tenantId, taskId) {
+  const task = await tasksRepo.getById(tenantId, taskId);
+  if (!task) throw new Error('Task not found');
+  if (!task.parent_id) return task;
+  return tasksRepo.getById(tenantId, task.root_id);
+}
+
 async function resumeStuckTask(tenantId, taskId) {
-  const root = await tasksRepo.getById(tenantId, taskId);
+  const root = await resolveRootTask(tenantId, taskId);
   if (!root) throw new Error('Task not found');
   if (root.status !== 'Stuck') throw new Error('Task is not in a Stuck state');
 
@@ -467,8 +484,8 @@ async function resumeStuckTask(tenantId, taskId) {
     await tasksRepo.updateUnsafe(managerTask.id, { status: 'Manager' });
   }
 
-  const updated = await tasksRepo.update(tenantId, taskId, { status: 'Manager', stuck_notes: null });
-  advanceChain(tenantId, taskId).catch((err) => console.error('[orchestrator] resume advance failed', err));
+  const updated = await tasksRepo.update(tenantId, root.id, { status: 'Manager', stuck_notes: null });
+  advanceChain(tenantId, root.id).catch((err) => console.error('[orchestrator] resume advance failed', err));
   return updated;
 }
 
@@ -493,13 +510,13 @@ async function inferResumeStatus(tenantId, root) {
 
 // ---------- Manual retry after Error ----------
 async function retryTask(tenantId, taskId) {
-  const root = await tasksRepo.getById(tenantId, taskId);
+  const root = await resolveRootTask(tenantId, taskId);
   if (!root) throw new Error('Task not found');
   if (root.status !== 'Error') throw new Error('Task is not in an Error state');
 
   const resumeStatus = await inferResumeStatus(tenantId, root);
-  const updated = await tasksRepo.update(tenantId, taskId, { status: resumeStatus, error_detail: null });
-  advanceChain(tenantId, taskId).catch((err) => console.error('[orchestrator] retry advance failed', err));
+  const updated = await tasksRepo.update(tenantId, root.id, { status: resumeStatus, error_detail: null });
+  advanceChain(tenantId, root.id).catch((err) => console.error('[orchestrator] retry advance failed', err));
   return updated;
 }
 
@@ -515,16 +532,16 @@ async function retryTask(tenantId, taskId) {
 const NUDGEABLE_STATUSES = ['DOO', 'Manager', 'Specialist', 'DOO_Review', 'Stuck', 'Error'];
 
 async function nudgeTask(tenantId, taskId) {
-  const root = await tasksRepo.getById(tenantId, taskId);
+  const root = await resolveRootTask(tenantId, taskId);
   if (!root) throw new Error('Task not found');
   if (!NUDGEABLE_STATUSES.includes(root.status)) {
     throw new Error(`"${root.status}" tasks don't need nudging`);
   }
 
-  if (root.status === 'Error') return retryTask(tenantId, taskId);
-  if (root.status === 'Stuck') return resumeStuckTask(tenantId, taskId);
+  if (root.status === 'Error') return retryTask(tenantId, root.id);
+  if (root.status === 'Stuck') return resumeStuckTask(tenantId, root.id);
 
-  advanceChain(tenantId, taskId).catch((err) => console.error('[orchestrator] nudge advance failed', err));
+  advanceChain(tenantId, root.id).catch((err) => console.error('[orchestrator] nudge advance failed', err));
   return root;
 }
 
