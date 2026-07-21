@@ -122,8 +122,34 @@
             <li style="font-size:12.5px;line-height:1.5;padding:10px 12px;background:var(--bg);border-left:2px solid var(--brand);border-radius:4px;color:#C6CAD1;">
               <span class="mono" style="display:block;font-size:10.5px;color:var(--text-dimmer);margin-bottom:4px;">${formatDate(i.created_at)}</span>
               ${escapeHTML(i.proposal)}
+              <div style="margin-top:8px;">
+                ${i.converted_task_id
+                  ? `<button class="btn btn-sm btn-ghost" data-action="view-converted" data-task-id="${i.converted_task_id}">✓ Converted — view task</button>`
+                  : `<button class="btn btn-sm btn-primary" data-action="convert" data-id="${i.id}">Turn into Directive</button>`}
+              </div>
             </li>`).join('')
         : '<li class="empty-note">No proposals logged yet.</li>';
+
+      list.querySelectorAll('[data-action="convert"]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          btn.disabled = true;
+          btn.textContent = 'Converting…';
+          try {
+            await fetchJSON(`${API}/tasks/improvements/${btn.dataset.id}/convert`, { method: 'POST' });
+            toast('Converted to a directive — the DOO is on it', 'success');
+            await loadIdle();
+            await loadTree();
+          } catch (err) {
+            toast(err.message, 'error');
+            btn.disabled = false;
+            btn.textContent = 'Turn into Directive';
+          }
+        });
+      });
+
+      list.querySelectorAll('[data-action="view-converted"]').forEach((btn) => {
+        btn.addEventListener('click', () => window.TaskDetail.open(btn.dataset.taskId));
+      });
     } catch { /* non-fatal */ }
   }
 

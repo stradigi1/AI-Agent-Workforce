@@ -215,11 +215,17 @@ CREATE INDEX IF NOT EXISTS idx_usage_log_tenant_date ON usage_log(tenant_id, cre
 -- DOO idle-mode workforce-improvement proposals — kept separate from tasks
 -- =========================================================================
 CREATE TABLE IF NOT EXISTS improvement_log (
-  id          SERIAL PRIMARY KEY,
-  tenant_id   INTEGER NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-  proposal    TEXT NOT NULL,
-  created_at  TIMESTAMP DEFAULT NOW()
+  id                  SERIAL PRIMARY KEY,
+  tenant_id           INTEGER NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  proposal            TEXT NOT NULL,
+  converted_task_id   INTEGER REFERENCES tasks(id) ON DELETE SET NULL,
+  created_at          TIMESTAMP DEFAULT NOW()
 );
+
+-- ADD COLUMN IF NOT EXISTS so this lands on databases migrated before
+-- converted_task_id existed, since the CREATE TABLE above only applies on
+-- a fresh install (IF NOT EXISTS skips it entirely otherwise).
+ALTER TABLE improvement_log ADD COLUMN IF NOT EXISTS converted_task_id INTEGER REFERENCES tasks(id) ON DELETE SET NULL;
 
 CREATE INDEX IF NOT EXISTS idx_improvement_log_tenant ON improvement_log(tenant_id, created_at DESC);
 
