@@ -43,6 +43,41 @@ router.get('/improvements', async (req, res) => {
   }
 });
 
+function titleFromProposal(proposal) {
+  const firstSentence = proposal.split(/(?<=[.!?])\s/)[0] || proposal;
+  return firstSentence.length <= 80 ? firstSentence : `${proposal.slice(0, 77)}...`;
+}
+
+// Turns a DOO idle-mode improvement proposal into a real directive, running
+// it through the normal chain exactly like a CEO-issued one. Proposals are
+// otherwise pure informational logging (Section 3 "idle behavior") — this is
+// the one-click path from "good idea" to actual work, without hand-copying
+// the text into the New Directive form.
+router.post('/improvements/:id/convert', async (req, res) => {
+  try {
+    const improvement = await improvementsRepo.getById(req.tenantId, req.params.id);
+    if (!improvement) return res.status(404).json({ error: 'Improvement proposal not found' });
+    if (improvement.converted_task_id) {
+      return res.status(409).json({ error: 'This proposal has already been converted into a directive' });
+    }
+
+    const task = await orchestrator.createDirective(req.tenantId, req.user.id, {
+      taskName: titleFromProposal(improvement.proposal),
+      objective: improvement.proposal,
+      priority: 'Medium',
+    });
+    await improvementsRepo.markConverted(req.tenantId, improvement.id, task.id);
+    await activityRepo.log(req.tenantId, req.user.id, 'improvement_converted', `Improvement ${improvement.id} -> task ${task.id}`);
+
+    orchestrator.advanceChain(req.tenantId, task.id).catch((err) => console.error('[tasks] advanceChain failed', err));
+
+    res.status(201).json(task);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 router.get('/:id', async (req, res) => {
   try {
     const task = await tasksRepo.getById(req.tenantId, req.params.id);

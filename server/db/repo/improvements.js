@@ -16,4 +16,20 @@ async function listByTenant(tenantId, limit = 50) {
   return rows;
 }
 
-module.exports = { log, listByTenant };
+async function getById(tenantId, id) {
+  const { rows } = await pool.query(
+    `SELECT * FROM improvement_log WHERE tenant_id = $1 AND id = $2`,
+    [tenantId, id]
+  );
+  return rows[0] || null;
+}
+
+async function markConverted(tenantId, id, taskId) {
+  const { rows } = await pool.query(
+    `UPDATE improvement_log SET converted_task_id = $3 WHERE tenant_id = $1 AND id = $2 RETURNING *`,
+    [tenantId, id, taskId]
+  );
+  return rows[0] || null;
+}
+
+module.exports = { log, listByTenant, getById, markConverted };
