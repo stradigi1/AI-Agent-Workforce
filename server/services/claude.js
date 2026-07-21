@@ -27,20 +27,39 @@ async function callOnce(systemPrompt, userMessage, maxTokens) {
     system: systemPrompt,
     messages: [{ role: 'user', content: userMessage }],
   });
-  const textBlock = response.content.find((b) => b.type === 'text');
-  if (!textBlock) throw new Error('No text response from Claude');
-  return {
-    parsed: parseJSON(textBlock.text),
+  const usage = {
     inputTokens: response.usage?.input_tokens || 0,
     outputTokens: response.usage?.output_tokens || 0,
   };
+
+  const textBlock = response.content.find((b) => b.type === 'text');
+  if (!textBlock) {
+    // No text block usually means the response hit max_tokens before ever
+    // emitting visible output (e.g. spent its whole budget on internal
+    // reasoning first) — surfacing stop_reason makes that diagnosable
+    // instead of just "No text response", and usage is attached to the
+    // error so callAgent can still log the tokens actually spent even
+    // though the call ultimately failed.
+    const err = new Error(`No text response from Claude (stop_reason: ${response.stop_reason || 'unknown'})`);
+    err.usage = usage;
+    throw err;
+  }
+
+  try {
+    return { parsed: parseJSON(textBlock.text), ...usage };
+  } catch (parseErr) {
+    const err = new Error(`Failed to parse Claude's response as JSON: ${parseErr.message}`);
+    err.usage = usage;
+    throw err;
+  }
 }
 
 // Calls Claude and returns parsed JSON output, retrying once automatically
 // on any failure (network error, timeout, malformed JSON) per Section 3's
 // "retry automatically once; if it fails again, mark the task Error" rule.
-// Logs token usage against the tenant regardless of which attempt succeeds.
-async function callAgent({ tenantId, taskId = null, tier, systemPrompt, userMessage, maxTokens = 1500 }) {
+// Logs token usage against the tenant regardless of which attempt succeeds
+// OR fails partway — a truncated/malformed response still spent real tokens.
+async function callAgent({ tenantId, taskId = null, tier, systemPrompt, userMessage, maxTokens = 4096 }) {
   let lastError;
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
@@ -57,6 +76,16 @@ async function callAgent({ tenantId, taskId = null, tier, systemPrompt, userMess
     } catch (err) {
       lastError = err;
       console.warn(`[claude] ${tier} call attempt ${attempt} failed: ${err.message}`);
+      if (err.usage) {
+        await usageRepo.record(tenantId, {
+          taskId,
+          tier,
+          model: MODEL,
+          inputTokens: err.usage.inputTokens,
+          outputTokens: err.usage.outputTokens,
+          estimatedCostUsd: estimateCost(err.usage.inputTokens, err.usage.outputTokens),
+        }).catch(() => {});
+      }
     }
   }
   throw lastError;

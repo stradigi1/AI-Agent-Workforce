@@ -155,6 +155,10 @@ Respond with ONLY valid JSON, no markdown fences, no preamble, in this exact sha
 
     const specResult = await claude.callAgent({
       tenantId, taskId: current.id, tier: 'Specialist', systemPrompt: specialistSystemPrompt, userMessage: specUserMessage,
+      // Specialist output is the actual deliverable (blog posts, multi-part
+      // content, code, etc.) — the default budget is nowhere near enough for
+      // substantial content and silently produces a truncated/empty response.
+      maxTokens: 8192,
     });
 
     current = await tasksRepo.updateUnsafe(current.id, { output: specResult.output });
@@ -231,7 +235,12 @@ ${combined}
 Respond with ONLY valid JSON, no markdown fences, no preamble, in this exact shape:
 { "compiled_output": "the final compiled deliverable, plain text" }`;
 
-  const result = await claude.callAgent({ tenantId, taskId: managerTask.id, tier: 'Manager', systemPrompt, userMessage });
+  // Compiling multiple specialists' full deliverables into one document can
+  // easily exceed a modest token budget — same reasoning as the specialist
+  // call above.
+  const result = await claude.callAgent({
+    tenantId, taskId: managerTask.id, tier: 'Manager', systemPrompt, userMessage, maxTokens: 8192,
+  });
   await tasksRepo.updateUnsafe(managerTask.id, { output: result.compiled_output, status: 'Approved' });
   return result.compiled_output;
 }
