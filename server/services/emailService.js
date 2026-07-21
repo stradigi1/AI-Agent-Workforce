@@ -1,37 +1,68 @@
-// Thin email abstraction. If SMTP_HOST/SMTP_USER/SMTP_PASS are set in env,
-// sends real mail via nodemailer. Otherwise falls back to console logging so
-// the app runs end-to-end without requiring an email provider to be
-// configured first — swap in a real provider (Postmark/Resend/SendGrid SMTP,
-// or Gmail SMTP for quick testing) by setting those three secrets.
+// Email abstraction — uses AgentMail (via Replit Connectors) when
+// AGENTMAIL_INBOX_ID is set; otherwise falls back to SMTP (nodemailer) if
+// SMTP_HOST/USER/PASS are present; otherwise stubs to console so the app
+// runs without any email provider configured.
 
-let transporter = null;
+// ── AgentMail (preferred) ───────────────────────────────────────────────────
+async function sendViaAgentMail({ to, subject, text, html }) {
+  const { ReplitConnectors } = require('@replit/connectors-sdk');
+  const connectors = new ReplitConnectors();
+  const inboxId = process.env.AGENTMAIL_INBOX_ID;
+
+  const body = { to, subject };
+  if (html) body.html = html;
+  if (text) body.text = text;
+
+  const response = await connectors.proxy(
+    'agentmail',
+    `/v0/inboxes/${inboxId}/messages`,
+    { method: 'POST', body: JSON.stringify(body) }
+  );
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`AgentMail error ${response.status}: ${err}`);
+  }
+  return response.json();
+}
+
+// ── SMTP / nodemailer (fallback) ────────────────────────────────────────────
+let _transporter = null;
 function getTransporter() {
-  if (transporter) return transporter;
+  if (_transporter) return _transporter;
   if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) return null;
-
   const nodemailer = require('nodemailer');
-  transporter = nodemailer.createTransport({
+  _transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT) || 587,
     secure: process.env.SMTP_SECURE === 'true',
     auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
   });
-  return transporter;
+  return _transporter;
 }
 
+// ── Public API ──────────────────────────────────────────────────────────────
 async function sendEmail({ to, subject, text, html }) {
-  const t = getTransporter();
-  if (!t) {
-    console.log(`[email:stub] to=${to} subject="${subject}"\n${text || html}`);
-    return { stubbed: true };
+  // 1. AgentMail
+  if (process.env.AGENTMAIL_INBOX_ID) {
+    return sendViaAgentMail({ to, subject, text, html });
   }
-  return t.sendMail({
-    from: process.env.SMTP_FROM || 'no-reply@stradigi-workforce.local',
-    to,
-    subject,
-    text,
-    html,
-  });
+
+  // 2. SMTP
+  const t = getTransporter();
+  if (t) {
+    return t.sendMail({
+      from: process.env.SMTP_FROM || 'no-reply@stradigi-workforce.local',
+      to,
+      subject,
+      text,
+      html,
+    });
+  }
+
+  // 3. Stub
+  console.log(`[email:stub] to=${to} subject="${subject}"\n${text || html}`);
+  return { stubbed: true };
 }
 
 module.exports = { sendEmail };
