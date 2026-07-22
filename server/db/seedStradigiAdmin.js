@@ -58,12 +58,12 @@ async function main() {
   const existing = await usersRepo.getStradigiUserByEmail(email);
 
   if (existing) {
-    // Update the password so re-deploys with a rotated credential work.
-    await pool.query(
-      `UPDATE users SET password_hash = $1, name = $2, updated_at = NOW()
-       WHERE id = $3`,
-      [passwordHash, name, existing.id]
-    );
+    // usersRepo.resetPassword also clears failed_login_attempts/locked_until/
+    // pending reset tokens — a raw "UPDATE password_hash" here would leave a
+    // locked-out account still locked even after the password is "fixed" by
+    // a redeploy, which defeats the point of this being the recovery path.
+    await usersRepo.resetPassword(existing.id, passwordHash);
+    await pool.query(`UPDATE users SET name = $2 WHERE id = $1`, [existing.id, name]);
     console.log(`Updated Stradigi Admin: ${email} (id ${existing.id}).`);
   } else {
     const user = await usersRepo.createStradigiUser({ email, passwordHash, name, role: 'StradigiAdmin' });

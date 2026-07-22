@@ -43,27 +43,39 @@ function getTransporter() {
 }
 
 // ── Public API ──────────────────────────────────────────────────────────────
+// Callers (signup, invites, password reset, ticket notifications, billing
+// alerts) never check this for success — an email is a side effect of some
+// other primary action, not the point of the request. Before this had a real
+// provider behind it, that was safe by construction: the stub always
+// "succeeded." Now that a real network call to a third-party API sits behind
+// it, a provider hiccup, an unauthorized connector, or a bad inbox ID would
+// throw and — since most call sites are inside the same try/catch as the
+// primary action — take down signup/login-adjacent requests that have
+// nothing to do with email. So failures are caught and logged here, once,
+// rather than requiring every call site to guard against it individually.
 async function sendEmail({ to, subject, text, html }) {
-  // 1. AgentMail
-  if (process.env.AGENTMAIL_INBOX_ID) {
-    return sendViaAgentMail({ to, subject, text, html });
-  }
+  try {
+    if (process.env.AGENTMAIL_INBOX_ID) {
+      return await sendViaAgentMail({ to, subject, text, html });
+    }
 
-  // 2. SMTP
-  const t = getTransporter();
-  if (t) {
-    return t.sendMail({
-      from: process.env.SMTP_FROM || 'no-reply@stradigi-workforce.local',
-      to,
-      subject,
-      text,
-      html,
-    });
-  }
+    const t = getTransporter();
+    if (t) {
+      return await t.sendMail({
+        from: process.env.SMTP_FROM || 'no-reply@stradigi-workforce.local',
+        to,
+        subject,
+        text,
+        html,
+      });
+    }
 
-  // 3. Stub
-  console.log(`[email:stub] to=${to} subject="${subject}"\n${text || html}`);
-  return { stubbed: true };
+    console.log(`[email:stub] to=${to} subject="${subject}"\n${text || html}`);
+    return { stubbed: true };
+  } catch (err) {
+    console.error(`[email] failed to send to=${to} subject="${subject}":`, err.message);
+    return { failed: true, error: err.message };
+  }
 }
 
 module.exports = { sendEmail };
