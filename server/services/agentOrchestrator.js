@@ -140,12 +140,27 @@ async function runSpecialistWithReview(tenantId, root, managerTask, specialistTa
       ? history[history.length - 1].manager_feedback
       : managerTask.doo_validation_notes || null;
 
+    // Specialists under the same Manager often depend on each other's work
+    // (e.g. "review the draft" or "match these social posts to the blog
+    // post") but otherwise never see anything beyond their own objective —
+    // there was nowhere for that content to come from, which is exactly why
+    // a specialist would legitimately report being blocked no matter how
+    // many times it's retried. Re-fetched fresh every round (not just once)
+    // since specialists run concurrently and a sibling's output may not
+    // exist yet on round 1 but will by round 2 or 3.
+    const siblings = (await tasksRepo.getChildren(tenantId, managerTask.id)).filter((s) => s.id !== current.id);
+    const siblingContext = siblings.length
+      ? `\nOther specialists working under the same manager on this project (for context — your task may depend on one of these):\n${
+          siblings.map((s) => `--- ${s.agent_role} — "${s.task_name}" ---\n${s.output || '(not completed yet)'}`).join('\n\n')
+        }\n`
+      : '';
+
     const specUserMessage = `ACTION: do_the_work
 Your role: ${current.agent_role}
 Task: ${current.task_name}
 Objective: ${current.objective}
 ${lastFeedback ? `\nPrevious feedback to address (revision round ${current.revision_round + 1} of ${REVISION_CAP}): ${lastFeedback}` : ''}
-
+${siblingContext}
 Respond with ONLY valid JSON, no markdown fences, no preamble, in this exact shape:
 {
   "output": "the actual deliverable content, as plain text",
@@ -531,14 +546,35 @@ async function retryTask(tenantId, taskId) {
 // the activeChains guard no-ops if a run is genuinely still in flight.
 const NUDGEABLE_STATUSES = ['DOO', 'Manager', 'Specialist', 'DOO_Review', 'Stuck', 'Error'];
 
+// A specialist can be genuinely Stuck while the root's own status field
+// says something else — e.g. a prior nudge called plain advanceChain,
+// which re-discovers the same stuck specialist (still excluded from
+// "pending" work) and bails without ever resetting it, potentially leaving
+// the root's status one step behind the specialist's. Checking the real
+// tree state directly means nudge keeps working even if that drift
+// happens, rather than only being effective when the two happen to agree.
+async function hasStuckSpecialist(tenantId, root) {
+  const managerTask = (await tasksRepo.getChildren(tenantId, root.id)).find((t) => t.tier === 'Manager');
+  if (!managerTask) return false;
+  const specialists = await tasksRepo.getChildren(tenantId, managerTask.id);
+  return specialists.some((s) => s.status === 'Stuck');
+}
+
 async function nudgeTask(tenantId, taskId) {
-  const root = await resolveRootTask(tenantId, taskId);
+  let root = await resolveRootTask(tenantId, taskId);
   if (!root) throw new Error('Task not found');
   if (!NUDGEABLE_STATUSES.includes(root.status)) {
     throw new Error(`"${root.status}" tasks don't need nudging`);
   }
 
   if (root.status === 'Error') return retryTask(tenantId, root.id);
+
+  if (root.status !== 'Stuck' && (await hasStuckSpecialist(tenantId, root))) {
+    root = await tasksRepo.update(tenantId, root.id, {
+      status: 'Stuck',
+      stuck_notes: root.stuck_notes || 'A specialist is stuck; re-synced from an out-of-date directive status.',
+    });
+  }
   if (root.status === 'Stuck') return resumeStuckTask(tenantId, root.id);
 
   advanceChain(tenantId, root.id).catch((err) => console.error('[orchestrator] nudge advance failed', err));
