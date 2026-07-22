@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 
 const stripeService = require('./services/stripeService');
+const staleTaskSweeper = require('./services/staleTaskSweeper');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -67,4 +68,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`AI Agent Workforce Portal running on port ${PORT}`);
+  staleTaskSweeper.start();
 });

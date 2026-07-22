@@ -139,6 +139,23 @@ async function listApprovalQueue(tenantId) {
   return rows;
 }
 
+// Cross-tenant on purpose — this backs the background sweep (staleTaskSweeper.js)
+// that looks for directives silently orphaned by a server restart mid-chain.
+// Deliberately scoped to the "active processing" statuses only, never
+// Stuck/Error — those already carry a specific reason a human should look
+// at before anything retries them automatically.
+const ACTIVE_PROCESSING_STATUSES = ['DOO', 'Manager', 'Specialist', 'DOO_Review'];
+
+async function listStaleActiveRootTasks(staleMinutes) {
+  const { rows } = await pool.query(
+    `SELECT id, tenant_id, task_name, status, updated_at FROM tasks
+     WHERE parent_id IS NULL AND status = ANY($1::text[])
+       AND updated_at < NOW() - ($2 || ' minutes')::interval`,
+    [ACTIVE_PROCESSING_STATUSES, staleMinutes]
+  );
+  return rows;
+}
+
 module.exports = {
   OPEN_STATUSES,
   listByTenant,
@@ -152,4 +169,5 @@ module.exports = {
   deleteTask,
   getOpenCount,
   listApprovalQueue,
+  listStaleActiveRootTasks,
 };
