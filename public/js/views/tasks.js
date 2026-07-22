@@ -37,8 +37,8 @@
       return `
         <div class="status-explainer stuck">
           <div class="status-explainer-title">🛑 Stuck</div>
-          <p><strong>What this means:</strong> the Manager and Specialist went back and forth 3 times without reaching an acceptable result, so this was escalated automatically instead of looping forever.</p>
-          <p><strong>How to resolve it:</strong> check the revision history below to see what kept getting rejected — if the objective needs to be clearer, edit it above first. Then click <strong>DOO: Resume</strong> below. That resets the whole directive (not just this one task) and gives it another pass.</p>
+          <p><strong>What this means:</strong> either a Specialist and Manager went back and forth 3 times without reaching an acceptable result, or the DOO itself rejected the compiled work 3 times — either way, it escalated automatically instead of looping forever.</p>
+          <p><strong>How to resolve it:</strong> check the notes below for which one happened. Then click <strong>DOO: Resume</strong> — for a Specialist/Manager disagreement it resets and retries; for repeated DOO rejections it has the DOO reconsider and revise the spec itself first (the usual cause there is the spec asking for something the workforce can't produce, like a file or outside data). If it comes back Stuck again saying this needs your decision, that's a real scope problem — the fix is editing the directive and reissuing it, not clicking Resume again.</p>
         </div>
       `;
     }

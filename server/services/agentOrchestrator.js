@@ -277,6 +277,43 @@ Respond with ONLY valid JSON, no markdown fences, no preamble, in this exact sha
   return claude.callAgent({ tenantId, taskId: root.id, tier: 'DOO', systemPrompt, userMessage });
 }
 
+// ---------- Step: DOO reconsiders the spec itself after its own repeated
+// rejections stalled the project (Section 3: "the DOO adjusts the spec/
+// instructions... or escalates to the CEO if it's a scope problem"). The
+// most common real cause here is the spec requiring something the workforce
+// structurally can't produce (a file, external data) — resetting the same
+// specialists to retry against an unchanged, unachievable spec would just
+// fail identically forever, so this is what actually breaks that loop. ----------
+async function runDooReviseSpec(tenantId, root) {
+  const departments = await departmentsRepo.listDepartments(tenantId);
+  const systemPrompt = await getSystemPrompt(tenantId, 'DOO', null, defaultDooPrompt(departments.map((d) => d.name)));
+
+  const userMessage = `ACTION: revise_spec_after_stuck
+This project stalled because your own validation rejected the Manager's compiled work
+${REVISION_CAP} times without it ever passing. Original spec:
+${root.spec}
+
+Why it kept failing (your own validation notes across those rejections):
+${root.stuck_notes}
+
+Decide: can this spec be revised to be achievable by the workforce (plain-text deliverables
+only — no files, no external systems, no data beyond what's in the directive) while still
+meaningfully satisfying the original directive below? If yes, write the revised spec. If this
+genuinely can't be done within those bounds, this is a scope problem for the human CEO to
+decide, not something a revised spec can fix.
+
+Original directive: ${root.directive}
+
+Respond with ONLY valid JSON, no markdown fences, no preamble, in this exact shape:
+{
+  "action": "revise" or "escalate_to_ceo",
+  "spec": "the revised spec, plain text with bullet points using - (empty string if escalating)",
+  "notes": "brief explanation of what changed and why, or why this needs the CEO's decision"
+}`;
+
+  return claude.callAgent({ tenantId, taskId: root.id, tier: 'DOO', systemPrompt, userMessage });
+}
+
 // ---------- Entry point: create a new directive (root DOO task) ----------
 async function createDirective(tenantId, userId, { taskName, objective, priority }) {
   const root = await tasksRepo.create(tenantId, {
@@ -489,17 +526,50 @@ async function resumeStuckTask(tenantId, taskId) {
   if (root.status !== 'Stuck') throw new Error('Task is not in a Stuck state');
 
   const managerTask = (await tasksRepo.getChildren(tenantId, root.id)).find((t) => t.tier === 'Manager');
-  if (managerTask) {
-    const specialists = await tasksRepo.getChildren(tenantId, managerTask.id);
-    for (const s of specialists) {
-      if (s.status === 'Stuck') {
-        await tasksRepo.updateUnsafe(s.id, { status: 'Specialist', revision_round: 0, revision_history: JSON.stringify([]) });
-      }
+  const specialists = managerTask ? await tasksRepo.getChildren(tenantId, managerTask.id) : [];
+  const stuckSpecialists = specialists.filter((s) => s.status === 'Stuck');
+
+  if (stuckSpecialists.length > 0) {
+    // A specialist itself hit the revision cap — an execution problem, not
+    // a spec problem. Reset it and retry against the unchanged spec (which
+    // now also gets sibling-specialist context it may have been missing).
+    for (const s of stuckSpecialists) {
+      await tasksRepo.updateUnsafe(s.id, { status: 'Specialist', revision_round: 0, revision_history: JSON.stringify([]) });
     }
     await tasksRepo.updateUnsafe(managerTask.id, { status: 'Manager' });
+    const updated = await tasksRepo.update(tenantId, root.id, { status: 'Manager', stuck_notes: null });
+    advanceChain(tenantId, root.id).catch((err) => console.error('[orchestrator] resume advance failed', err));
+    return updated;
   }
 
-  const updated = await tasksRepo.update(tenantId, root.id, { status: 'Manager', stuck_notes: null });
+  // No specialist is actually stuck — this got here via the DOO rejecting
+  // the Manager's compiled work repeatedly instead, which usually means the
+  // spec itself asked for something the workforce can't produce. Retrying
+  // the same specialists against an unchanged spec would just fail
+  // identically again, so have the DOO reconsider the spec first.
+  const revision = await runDooReviseSpec(tenantId, root);
+
+  if (revision.action !== 'revise' || !revision.spec) {
+    // Genuinely a scope problem — stays Stuck for the CEO to decide (cancel,
+    // or issue a new directive), with the DOO's reasoning attached instead
+    // of the old generic stuck note.
+    const updated = await tasksRepo.update(tenantId, root.id, {
+      stuck_notes: `DOO: this needs your decision rather than another retry — ${revision.notes}`,
+    });
+    return updated;
+  }
+
+  if (managerTask) {
+    await tasksRepo.updateUnsafe(managerTask.id, { status: 'Manager', doo_validation_notes: revision.notes });
+    for (const s of specialists) {
+      await tasksRepo.updateUnsafe(s.id, { status: 'Specialist', revision_round: 0, revision_history: JSON.stringify([]) });
+    }
+  }
+
+  const updated = await tasksRepo.update(tenantId, root.id, {
+    status: 'Manager', stuck_notes: null, spec: revision.spec, revision_round: 0,
+    doo_validation_notes: revision.notes,
+  });
   advanceChain(tenantId, root.id).catch((err) => console.error('[orchestrator] resume advance failed', err));
   return updated;
 }
