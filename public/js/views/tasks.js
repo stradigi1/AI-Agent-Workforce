@@ -26,6 +26,34 @@
     return row;
   }
 
+  // A plain-language explanation of Stuck/Error, shown prominently above the
+  // raw technical notes — names the state, says what it actually means, and
+  // gives the one concrete action that resolves it. Resume/Retry always act
+  // on the whole directive (see resolveRootTask in agentOrchestrator.js), so
+  // that's called out explicitly here even when viewing a child task, since
+  // it's not obvious from the button alone.
+  function statusExplainer(task) {
+    if (task.status === 'Stuck') {
+      return `
+        <div class="status-explainer stuck">
+          <div class="status-explainer-title">🛑 Stuck</div>
+          <p><strong>What this means:</strong> the Manager and Specialist went back and forth 3 times without reaching an acceptable result, so this was escalated automatically instead of looping forever.</p>
+          <p><strong>How to resolve it:</strong> check the revision history below to see what kept getting rejected — if the objective needs to be clearer, edit it above first. Then click <strong>DOO: Resume</strong> below. That resets the whole directive (not just this one task) and gives it another pass.</p>
+        </div>
+      `;
+    }
+    if (task.status === 'Error') {
+      return `
+        <div class="status-explainer error">
+          <div class="status-explainer-title">⚠ Error</div>
+          <p><strong>What this means:</strong> something went wrong on a technical level while an AI agent was working on this step (a failed API call, a malformed response) — not a content or quality problem.</p>
+          <p><strong>How to resolve it:</strong> click <strong>Retry</strong> below to pick up right where it left off, for the whole directive. If it fails again with the exact same error after a retry or two, that's worth flagging as a persistent issue rather than a one-off glitch.</p>
+        </div>
+      `;
+    }
+    return '';
+  }
+
   function revisionHistoryHTML(history) {
     if (!history || history.length === 0) return '';
     return `
@@ -72,6 +100,7 @@
         <label>Status</label>
         <span class="status-tag status-${task.status}">${STATUS_LABELS[task.status] || task.status}</span>
       </div>
+      ${statusExplainer(task)}
       ${task.directive ? `<div class="detail-field"><label>Original directive</label><div class="readonly-text">${escapeHTML(task.directive)}</div></div>` : ''}
       ${task.spec ? `<div class="detail-field"><label>Project spec (DOO)</label><div class="readonly-text">${escapeHTML(task.spec)}</div></div>` : ''}
       <div class="detail-field">

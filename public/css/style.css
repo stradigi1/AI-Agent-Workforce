@@ -315,6 +315,14 @@ table.data-table tr:hover td { background: #ffffff05; }
 .revision-entry.accepted { border-left-color: var(--teal); }
 .revision-entry.rejected { border-left-color: var(--red); }
 
+/* ---------- Status explainer (Stuck/Error — name, meaning, how to fix) ---------- */
+
+.status-explainer { border: 1px solid var(--red); background: #C2554515; border-radius: 8px; padding: 14px 16px; margin-bottom: 18px; }
+.status-explainer-title { font-weight: 700; font-size: 14px; color: #F0A79B; margin-bottom: 8px; }
+.status-explainer p { font-size: 13px; line-height: 1.6; color: var(--text); margin: 0 0 8px; }
+.status-explainer p:last-child { margin-bottom: 0; }
+.status-explainer strong { color: #fff; }
+
 /* ---------- Tabs ---------- */
 
 .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
