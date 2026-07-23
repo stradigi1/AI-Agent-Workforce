@@ -149,9 +149,24 @@ async function runSpecialistWithReview(tenantId, root, managerTask, specialistTa
     // since specialists run concurrently and a sibling's output may not
     // exist yet on round 1 but will by round 2 or 3.
     const siblings = (await tasksRepo.getChildren(tenantId, managerTask.id)).filter((s) => s.id !== current.id);
-    const siblingContext = siblings.length
-      ? `\nOther specialists working under the same manager on this project (for context — your task may depend on one of these):\n${
-          siblings.map((s) => `--- ${s.agent_role} — "${s.task_name}" ---\n${s.output || '(not completed yet)'}`).join('\n\n')
+    const completedSiblings = siblings.filter((s) => s.output);
+    // Framed as forcefully as possible on purpose: a softer "for context, may
+    // depend on one of these" reads as optional background, and a specialist
+    // whose whole job is reviewing/matching a sibling's work will otherwise
+    // reconstruct or approximate its own version instead of using the real
+    // one verbatim — which then produces made-up details (e.g. an invented
+    // word count) that the Manager correctly keeps rejecting, no matter how
+    // many rounds it gets. There is no separate file coming; this text *is*
+    // the deliverable.
+    const siblingContext = completedSiblings.length
+      ? `\nOTHER SPECIALISTS' COMPLETED WORK ON THIS SAME PROJECT — this is the actual, current
+deliverable content, not background reading. If your task involves reviewing, proofreading,
+matching, or building on someone else's work, THIS is that work — use it verbatim as your source
+material. Do not wait for it to be provided separately (nothing else is coming), and do not
+reconstruct, approximate, paraphrase, or invent your own version of it. Any facts you report
+about it (word counts, item counts, specific wording) must be computed from the actual text
+below, not estimated.\n${
+          completedSiblings.map((s) => `--- ${s.agent_role} — "${s.task_name}" ---\n${s.output}`).join('\n\n')
         }\n`
       : '';
 
