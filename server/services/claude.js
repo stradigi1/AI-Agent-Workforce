@@ -20,6 +20,27 @@ function parseJSON(text) {
   return JSON.parse(cleaned);
 }
 
+// The Anthropic SDK throws a 400 invalid_request_error with this exact
+// message when the account's credit balance runs out — indistinguishable
+// from any other malformed-request error unless checked for explicitly.
+// It's an account-level block: every single call fails identically until
+// credits are added, so retrying (callAgent's normal retry-once behavior)
+// or blaming the prompt/task is pointless and misleading.
+function isBillingError(err) {
+  return err && err.status === 400 && /credit balance is too low/i.test(err.message || '');
+}
+
+function billingErrorFor(err) {
+  const wrapped = new Error(
+    'Anthropic API credit balance is too low. This is not a bug in this task — every AI agent call ' +
+    'will fail the same way until credits are added at console.anthropic.com (Plans & Billing). ' +
+    'Retrying will not help until that\'s done.'
+  );
+  wrapped.isBillingError = true;
+  wrapped.usage = err.usage;
+  return wrapped;
+}
+
 async function callOnce(systemPrompt, userMessage, maxTokens) {
   const response = await client.messages.create({
     model: MODEL,
@@ -74,8 +95,8 @@ async function callAgent({ tenantId, taskId = null, tier, systemPrompt, userMess
       });
       return parsed;
     } catch (err) {
-      lastError = err;
-      console.warn(`[claude] ${tier} call attempt ${attempt} failed: ${err.message}`);
+      lastError = isBillingError(err) ? billingErrorFor(err) : err;
+      console.warn(`[claude] ${tier} call attempt ${attempt} failed: ${lastError.message}`);
       if (err.usage) {
         await usageRepo.record(tenantId, {
           taskId,
@@ -86,6 +107,7 @@ async function callAgent({ tenantId, taskId = null, tier, systemPrompt, userMess
           estimatedCostUsd: estimateCost(err.usage.inputTokens, err.usage.outputTokens),
         }).catch(() => {});
       }
+      if (lastError.isBillingError) break; // account-level block — a second attempt can't succeed
     }
   }
   throw lastError;
@@ -120,8 +142,9 @@ async function chatCompletion({ tenantId, systemPrompt, history, maxTokens = 800
       }
       return text;
     } catch (err) {
-      lastError = err;
-      console.warn(`[claude] chat attempt ${attempt} failed: ${err.message}`);
+      lastError = isBillingError(err) ? billingErrorFor(err) : err;
+      console.warn(`[claude] chat attempt ${attempt} failed: ${lastError.message}`);
+      if (lastError.isBillingError) break;
     }
   }
   throw lastError;

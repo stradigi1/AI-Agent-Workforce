@@ -43,6 +43,16 @@
       `;
     }
     if (task.status === 'Error') {
+      const isBilling = /credit balance is too low/i.test(task.error_detail || '');
+      if (isBilling) {
+        return `
+          <div class="status-explainer error">
+            <div class="status-explainer-title">⚠ Error — Anthropic account out of credits</div>
+            <p><strong>What this means:</strong> the Anthropic API account backing this app has run out of credit balance. This isn't specific to this task — every AI agent call (DOO, Manager, Specialist, chatbot) will fail the same way until this is fixed.</p>
+            <p><strong>How to resolve it:</strong> add credits or upgrade the plan at <strong>console.anthropic.com → Plans &amp; Billing</strong>. Clicking Retry won't help until that's done — once credits are added, come back and click Retry.</p>
+          </div>
+        `;
+      }
       return `
         <div class="status-explainer error">
           <div class="status-explainer-title">⚠ Error</div>
